@@ -13,7 +13,7 @@ class LoginPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'MiniWorld',
+                'Mini World',
                 style: TextStyle(
                   fontSize: 36,
                   fontWeight: FontWeight.bold,
