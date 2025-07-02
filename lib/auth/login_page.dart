@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mini_world/theme/app_colors.dart';
+import 'auth_service.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -29,8 +30,13 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               GestureDetector(
-                onTap: () {
-                  // TODO: 구글 로그인 구현
+                onTap: () async {
+                  final userCredential = await AuthService().signInWithGoogle();
+                  if (userCredential == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('로그인에 실패했습니다.')),
+                    );
+                  }
                 },
                 child: _buildLoginButton(
                   color: Colors.white,
