@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mini_world/theme/app_colors.dart';
 import '../game/game_tab.dart';
 import '../ranking/ranking_tab.dart';
 import '../profile/profile_tab.dart';
@@ -23,6 +24,7 @@ class _MiniWorldHomePageState extends State<MiniWorldHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Mini World')),
+      backgroundColor: AppColors.surface,
       body: SafeArea(child: _tabs[_selectedIndex]),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,

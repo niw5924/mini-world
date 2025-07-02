@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mini_world/theme/app_colors.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -6,6 +7,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.surface,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
