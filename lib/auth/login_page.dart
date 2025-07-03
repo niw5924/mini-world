@@ -38,12 +38,12 @@ class LoginPage extends StatelessWidget {
                     );
                   }
                 },
-                child: _buildGoogleLoginButton(
+                child: _buildSocialLoginButton(
                   color: Colors.white,
                   iconPath: 'assets/images/google_logo.png',
                   text: 'Google 계정으로 로그인',
-                  textColor: Color(0xFF1F1F1F),
-                  borderColor: Color(0xFF747775),
+                  textColor: const Color(0xFF1F1F1F),
+                  borderColor: const Color(0xFF747775),
                 ),
               ),
             ],
@@ -53,7 +53,7 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _buildGoogleLoginButton({
+  Widget _buildSocialLoginButton({
     required Color color,
     required String iconPath,
     required String text,
