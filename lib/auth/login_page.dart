@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mini_world/api/auth_api.dart';
+import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/theme/app_colors.dart';
-import 'auth_service.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -31,11 +32,16 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height: 24),
               GestureDetector(
                 onTap: () async {
-                  final firebaseUser = await AuthService().signInWithGoogle();
-                  if (firebaseUser == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('로그인에 실패했습니다.')),
+                  try {
+                    final firebaseUser = await AuthService().signInWithGoogle();
+                    final firebaseIdToken = await AuthService().getIdToken(
+                      firebaseUser,
                     );
+                    await AuthApi.login(firebaseIdToken);
+                  } catch (e) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text('문제가 발생했습니다 ($e)')));
                   }
                 },
                 child: _buildSocialLoginButton(
