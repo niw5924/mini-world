@@ -31,19 +31,19 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height: 24),
               GestureDetector(
                 onTap: () async {
-                  final userCredential = await AuthService().signInWithGoogle();
-                  if (userCredential == null) {
+                  final firebaseUser = await AuthService().signInWithGoogle();
+                  if (firebaseUser == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('로그인에 실패했습니다.')),
                     );
                   }
                 },
-                child: _buildLoginButton(
+                child: _buildGoogleLoginButton(
                   color: Colors.white,
                   iconPath: 'assets/images/google_logo.png',
                   text: 'Google 계정으로 로그인',
-                  textColor: const Color(0xFF1F1F1F),
-                  borderColor: const Color(0xFF747775),
+                  textColor: Color(0xFF1F1F1F),
+                  borderColor: Color(0xFF747775),
                 ),
               ),
             ],
@@ -53,7 +53,7 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLoginButton({
+  Widget _buildGoogleLoginButton({
     required Color color,
     required String iconPath,
     required String text,
