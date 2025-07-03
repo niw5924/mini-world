@@ -23,8 +23,11 @@ class _MiniWorldHomePageState extends State<MiniWorldHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Mini World')),
-      backgroundColor: AppColors.surface,
+      appBar: AppBar(
+        title: const Text('Mini World'),
+        backgroundColor: AppColors.appBarBackground,
+      ),
+      backgroundColor: AppColors.scaffoldBackground,
       body: SafeArea(child: _tabs[_selectedIndex]),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
