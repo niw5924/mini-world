@@ -29,4 +29,10 @@ class AuthService {
     if (firebaseIdToken == null) throw Exception('Firebase ID token is null');
     return firebaseIdToken;
   }
+
+  Future<void> signOut() async {
+    final googleSignIn = GoogleSignIn.instance;
+    await googleSignIn.signOut();
+    await _auth.signOut();
+  }
 }
