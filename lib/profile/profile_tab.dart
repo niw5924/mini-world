@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/api/user_api.dart';
+import 'package:mini_world/theme/app_colors.dart';
 
 class ProfileTab extends StatefulWidget {
   const ProfileTab({super.key});
@@ -40,17 +41,71 @@ class _ProfileTabState extends State<ProfileTab> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) return const Center(child: CircularProgressIndicator());
-    if (error != null) return Center(child: Text('오류: $error'));
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+    if (error != null) {
+      return Center(child: Text('오류 발생: $error'));
+    }
+
+    return ListView(
+      padding: const EdgeInsets.all(24),
       children: [
-        Text('이름: ${userInfo!['name']}'),
-        Text('이메일: ${userInfo!['email']}'),
-        Text('점수: ${userInfo!['score']}'),
-        const SizedBox(height: 20),
-        ElevatedButton(
+        Card(
+          color: AppColors.cardBackground,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: Colors.grey.shade300),
+          ),
+          elevation: 2,
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              children: [
+                const CircleAvatar(
+                  radius: 36,
+                  backgroundColor: AppColors.primary,
+                  child: Icon(Icons.person, size: 36, color: Colors.white),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  userInfo!['name'],
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  userInfo!['email'],
+                  style: TextStyle(color: Colors.grey.shade700),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '점수: ${userInfo!['score']}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+        ElevatedButton.icon(
           onPressed: () async {
             try {
               await AuthService().signOut();
@@ -63,7 +118,16 @@ class _ProfileTabState extends State<ProfileTab> {
               ).showSnackBar(SnackBar(content: Text('로그아웃 실패: $e')));
             }
           },
-          child: const Text('로그아웃'),
+          icon: const Icon(Icons.logout),
+          label: const Text('로그아웃'),
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: AppColors.primary,
+            padding: EdgeInsets.all(12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
         ),
       ],
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mini_world/theme/app_colors.dart';
 
 class GameTab extends StatelessWidget {
   const GameTab({super.key});
@@ -56,6 +57,7 @@ class _GameCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: AppColors.cardBackground,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(color: Colors.grey.shade300),
