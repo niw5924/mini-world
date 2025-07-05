@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/api/user_api.dart';
+import 'package:mini_world/api/record_api.dart';
 import 'package:mini_world/theme/app_colors.dart';
 
 class ProfileTab extends StatefulWidget {
@@ -108,6 +109,36 @@ class _ProfileTabState extends State<ProfileTab> {
         ElevatedButton.icon(
           onPressed: () async {
             try {
+              final firebaseUser = AuthService().currentUser!;
+              final firebaseIdToken = await AuthService().getIdToken(
+                firebaseUser,
+              );
+              final records = await RecordApi.me(firebaseIdToken);
+              print('📦 내 기록: $records');
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('기록이 콘솔에 출력되었습니다')));
+            } catch (e) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('기록 불러오기 실패: $e')));
+            }
+          },
+          icon: const Icon(Icons.list_alt),
+          label: const Text('내 기록 보기'),
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: AppColors.secondary,
+            padding: const EdgeInsets.all(12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        ElevatedButton.icon(
+          onPressed: () async {
+            try {
               await AuthService().signOut();
               ScaffoldMessenger.of(
                 context,
@@ -123,7 +154,7 @@ class _ProfileTabState extends State<ProfileTab> {
           style: ElevatedButton.styleFrom(
             foregroundColor: Colors.white,
             backgroundColor: AppColors.primary,
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
