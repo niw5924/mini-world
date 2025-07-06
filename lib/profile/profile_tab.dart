@@ -1,14 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/api/record_api.dart';
+import 'package:mini_world/api/user_api.dart';
 import 'package:mini_world/theme/app_colors.dart';
 
-class ProfileTab extends StatelessWidget {
+class ProfileTab extends StatefulWidget {
   const ProfileTab({super.key});
+
+  @override
+  State<ProfileTab> createState() => _ProfileTabState();
+}
+
+class _ProfileTabState extends State<ProfileTab> {
+  Map<String, dynamic>? userStats;
+  bool isLoading = true;
+  String? error;
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserStats();
+  }
+
+  Future<void> loadUserStats() async {
+    try {
+      final firebaseUser = AuthService().currentUser!;
+      final firebaseIdToken = await AuthService().getIdToken(firebaseUser);
+      final stats = await UserApi.me(firebaseIdToken);
+      setState(() {
+        userStats = stats;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        error = e.toString();
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final firebaseUser = AuthService().currentUser!;
+
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (error != null) {
+      return Center(child: Text('오류 발생: $error'));
+    }
 
     return ListView(
       padding: const EdgeInsets.all(24),
@@ -23,30 +64,87 @@ class ProfileTab extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                const CircleAvatar(
-                  radius: 36,
+                CircleAvatar(
+                  radius: 40,
+                  backgroundImage:
+                      firebaseUser.photoURL != null
+                          ? NetworkImage(firebaseUser.photoURL!)
+                          : null,
                   backgroundColor: AppColors.primary,
-                  child: Icon(Icons.person, size: 36, color: Colors.white),
+                  child:
+                      firebaseUser.photoURL == null
+                          ? const Icon(
+                            Icons.person,
+                            size: 40,
+                            color: Colors.white,
+                          )
+                          : null,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 8),
                 Text(
-                  firebaseUser.displayName ?? 'No name available',
+                  firebaseUser.displayName ?? 'No Name',
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
                 Text(
-                  firebaseUser.email ?? 'No email available',
+                  firebaseUser.email ?? 'No Email',
                   style: TextStyle(color: Colors.grey.shade700),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '승리: ${userStats!['win_count']}회',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(width: 24),
+                    Text(
+                      '패배: ${userStats!['lose_count']}회',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.military_tech,
+                      size: 24,
+                      color: Colors.amberAccent,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      '랭크 점수: ${userStats!['rank_point']}',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.local_fire_department,
+                      size: 24,
+                      color: Colors.red,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      '연승: ${userStats!['win_streak']}회',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 12),
         ElevatedButton.icon(
           onPressed: () async {
             try {
