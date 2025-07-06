@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mini_world/api/auth_api.dart';
 import 'package:mini_world/auth/auth_service.dart';
+import 'package:mini_world/api/user_api.dart';
 import 'package:mini_world/theme/app_colors.dart';
 
 class LoginPage extends StatelessWidget {
@@ -37,7 +37,7 @@ class LoginPage extends StatelessWidget {
                     final firebaseIdToken = await AuthService().getIdToken(
                       firebaseUser,
                     );
-                    await AuthApi.login(firebaseIdToken);
+                    await UserApi.init(firebaseIdToken);
                   } catch (e) {
                     ScaffoldMessenger.of(
                       context,
