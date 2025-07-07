@@ -38,4 +38,20 @@ class UserApi {
 
     return data['user'];
   }
+
+  static Future<List<Map<String, dynamic>>> ranking() async {
+    final apiUrl = dotenv.env['API_URL']!;
+    final response = await http.get(
+      Uri.parse('$apiUrl/api/user/ranking'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    final data = jsonDecode(response.body);
+
+    if (data['success'] != true) {
+      throw Exception(data['message']);
+    }
+
+    return List<Map<String, dynamic>>.from(data['ranking']);
+  }
 }
