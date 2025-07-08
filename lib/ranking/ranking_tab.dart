@@ -50,7 +50,7 @@ class _RankingTabState extends State<RankingTab> {
         final user = ranking![index];
         return ListTile(
           leading: Text('${user['rank']}위'),
-          title: Text(user['uid']),
+          title: Text(user['name']),
           subtitle: Text('랭크 점수: ${user['rank_point']}'),
         );
       },
