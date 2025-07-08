@@ -3,10 +3,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 
 class UserApi {
-  static Future<void> init(String firebaseIdToken) async {
+  static Future<void> initStats(String firebaseIdToken) async {
     final apiUrl = dotenv.env['API_URL']!;
     final response = await http.post(
-      Uri.parse('$apiUrl/api/user/init'),
+      Uri.parse('$apiUrl/api/user/init-stats'),
       headers: {
         'Authorization': 'Bearer $firebaseIdToken',
         'Content-Type': 'application/json',

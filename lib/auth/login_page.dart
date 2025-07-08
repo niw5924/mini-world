@@ -37,7 +37,7 @@ class LoginPage extends StatelessWidget {
                     final firebaseIdToken = await AuthService().getIdToken(
                       firebaseUser,
                     );
-                    await UserApi.init(firebaseIdToken);
+                    await UserApi.initStats(firebaseIdToken);
                   } catch (e) {
                     ScaffoldMessenger.of(
                       context,
