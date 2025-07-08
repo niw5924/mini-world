@@ -34,6 +34,31 @@ class _RankingTabState extends State<RankingTab> {
     }
   }
 
+  Widget _buildRankIcon(int rank) {
+    switch (rank) {
+      case 1:
+        return Image.asset(
+          'assets/images/gold_medal_1.png',
+          width: 32,
+          height: 32,
+        );
+      case 2:
+        return Image.asset(
+          'assets/images/silver_medal_2.png',
+          width: 32,
+          height: 32,
+        );
+      case 3:
+        return Image.asset(
+          'assets/images/bronze_medal_3.png',
+          width: 32,
+          height: 32,
+        );
+      default:
+        return Text('$rank위', style: const TextStyle(fontSize: 16));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -48,11 +73,13 @@ class _RankingTabState extends State<RankingTab> {
       itemCount: ranking!.length,
       itemBuilder: (context, index) {
         final user = ranking![index];
+        final rank = int.parse(user['rank']);
+
         return ListTile(
           leading: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('${user['rank']}위'),
+              _buildRankIcon(rank),
               const SizedBox(width: 8),
               CircleAvatar(backgroundImage: NetworkImage(user['photo_url'])),
             ],
