@@ -49,7 +49,14 @@ class _RankingTabState extends State<RankingTab> {
       itemBuilder: (context, index) {
         final user = ranking![index];
         return ListTile(
-          leading: Text('${user['rank']}위'),
+          leading: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('${user['rank']}위'),
+              const SizedBox(width: 8),
+              CircleAvatar(backgroundImage: NetworkImage(user['photo_url'])),
+            ],
+          ),
           title: Text(user['name']),
           subtitle: Text('랭크 점수: ${user['rank_point']}'),
         );
