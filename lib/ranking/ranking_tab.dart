@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mini_world/api/user_api.dart';
+import 'package:mini_world/auth/auth_service.dart';
 
 class RankingTab extends StatefulWidget {
   const RankingTab({super.key});
@@ -10,6 +11,7 @@ class RankingTab extends StatefulWidget {
 
 class _RankingTabState extends State<RankingTab> {
   List<Map<String, dynamic>>? ranking;
+  Map<String, dynamic> myRanking = {};
   bool isLoading = true;
   String? error;
 
@@ -22,8 +24,14 @@ class _RankingTabState extends State<RankingTab> {
   Future<void> loadRanking() async {
     try {
       final data = await UserApi.ranking();
+      final firebaseUser = AuthService().currentUser!;
+      final myData = data.firstWhere(
+        (user) => user['uid'] == firebaseUser.uid,
+        orElse: () => {},
+      );
       setState(() {
         ranking = data;
+        myRanking = myData;
         isLoading = false;
       });
     } catch (e) {
@@ -72,6 +80,34 @@ class _RankingTabState extends State<RankingTab> {
     }
   }
 
+  Widget _buildUserCard(Map<String, dynamic> user) {
+    final rank = int.parse(user['rank']);
+    final borderColor = _getBorderColor(rank);
+
+    return Card(
+      shape: RoundedRectangleBorder(
+        side:
+            borderColor != null
+                ? BorderSide(color: borderColor, width: 5.0)
+                : BorderSide.none,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        leading: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildRankIcon(rank),
+            const SizedBox(width: 8),
+            CircleAvatar(backgroundImage: NetworkImage(user['photo_url'])),
+          ],
+        ),
+        title: Text(user['name']),
+        subtitle: Text('랭크 점수: ${user['rank_point']}'),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -84,42 +120,34 @@ class _RankingTabState extends State<RankingTab> {
 
     return Padding(
       padding: const EdgeInsets.all(24),
-      child: ListView.builder(
-        itemCount: ranking!.length,
-        itemBuilder: (context, index) {
-          final user = ranking![index];
-          final rank = int.parse(user['rank']);
-          final borderColor = _getBorderColor(rank);
-
-          return Card(
-            shape: RoundedRectangleBorder(
-              side:
-                  borderColor != null
-                      ? BorderSide(color: borderColor, width: 5.0)
-                      : BorderSide.none,
-              borderRadius: BorderRadius.circular(12),
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: ranking!.length,
+              itemBuilder: (context, index) {
+                final user = ranking![index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: _buildUserCard(user),
+                );
+              },
             ),
-            margin: const EdgeInsets.only(bottom: 16),
-            child: ListTile(
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 8,
-              ),
-              leading: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildRankIcon(rank),
-                  const SizedBox(width: 8),
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(user['photo_url']),
-                  ),
-                ],
-              ),
-              title: Text(user['name']),
-              subtitle: Text('랭크 점수: ${user['rank_point']}'),
+          ),
+          const SizedBox(height: 16),
+          if (myRanking.isNotEmpty)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '내 랭킹',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                _buildUserCard(myRanking),
+              ],
             ),
-          );
-        },
+        ],
       ),
     );
   }
