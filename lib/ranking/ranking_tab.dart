@@ -59,6 +59,19 @@ class _RankingTabState extends State<RankingTab> {
     }
   }
 
+  Color? _getBorderColor(int rank) {
+    switch (rank) {
+      case 1:
+        return Colors.amber;
+      case 2:
+        return Colors.grey;
+      case 3:
+        return Colors.brown;
+      default:
+        return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -69,25 +82,45 @@ class _RankingTabState extends State<RankingTab> {
       return Center(child: Text('에러: $error'));
     }
 
-    return ListView.builder(
-      itemCount: ranking!.length,
-      itemBuilder: (context, index) {
-        final user = ranking![index];
-        final rank = int.parse(user['rank']);
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: ListView.builder(
+        itemCount: ranking!.length,
+        itemBuilder: (context, index) {
+          final user = ranking![index];
+          final rank = int.parse(user['rank']);
+          final borderColor = _getBorderColor(rank);
 
-        return ListTile(
-          leading: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildRankIcon(rank),
-              const SizedBox(width: 8),
-              CircleAvatar(backgroundImage: NetworkImage(user['photo_url'])),
-            ],
-          ),
-          title: Text(user['name']),
-          subtitle: Text('랭크 점수: ${user['rank_point']}'),
-        );
-      },
+          return Card(
+            shape: RoundedRectangleBorder(
+              side:
+                  borderColor != null
+                      ? BorderSide(color: borderColor, width: 5.0)
+                      : BorderSide.none,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            margin: const EdgeInsets.only(bottom: 16),
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+              leading: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildRankIcon(rank),
+                  const SizedBox(width: 8),
+                  CircleAvatar(
+                    backgroundImage: NetworkImage(user['photo_url']),
+                  ),
+                ],
+              ),
+              title: Text(user['name']),
+              subtitle: Text('랭크 점수: ${user['rank_point']}'),
+            ),
+          );
+        },
+      ),
     );
   }
 }
