@@ -11,7 +11,7 @@ class RankingTab extends StatefulWidget {
 
 class _RankingTabState extends State<RankingTab> {
   List<Map<String, dynamic>>? ranking;
-  Map<String, dynamic> myRanking = {};
+  Map<String, dynamic>? myRanking;
   bool isLoading = true;
   String? error;
 
@@ -25,10 +25,7 @@ class _RankingTabState extends State<RankingTab> {
     try {
       final data = await UserApi.ranking();
       final firebaseUser = AuthService().currentUser!;
-      final myData = data.firstWhere(
-        (user) => user['uid'] == firebaseUser.uid,
-        orElse: () => {},
-      );
+      final myData = data.firstWhere((user) => user['uid'] == firebaseUser.uid);
       setState(() {
         ranking = data;
         myRanking = myData;
@@ -135,7 +132,7 @@ class _RankingTabState extends State<RankingTab> {
             ),
           ),
           const SizedBox(height: 16),
-          if (myRanking.isNotEmpty)
+          if (myRanking != null)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -144,7 +141,7 @@ class _RankingTabState extends State<RankingTab> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
-                _buildUserCard(myRanking),
+                _buildUserCard(myRanking!),
               ],
             ),
         ],
