@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:mini_world/game/rps/rps_game_screen.dart';
 import 'package:mini_world/theme/app_colors.dart';
 
 class GameTab extends StatelessWidget {
@@ -8,29 +10,36 @@ class GameTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(24),
-      children: const [
-        _GameCard(
+      children: [
+        const _GameCard(
           icon: Icons.grid_3x3,
           title: 'Tic-Tac-Toe',
           subtitle: 'Play classic Tic-Tac-Toe',
           iconBackgroundColor: Color(0xFFD0E8FF),
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         _GameCard(
           icon: Icons.front_hand,
           title: 'Rock Paper Scissors',
           subtitle: 'Challenge your friends',
-          iconBackgroundColor: Color(0xFFB2CCFF),
+          iconBackgroundColor: const Color(0xFFB2CCFF),
+          onTap: () {
+            HapticFeedback.mediumImpact();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const RpsGameScreen()),
+            );
+          },
         ),
-        SizedBox(height: 16),
-        _GameCard(
+        const SizedBox(height: 16),
+        const _GameCard(
           icon: Icons.quiz,
           title: 'Trivia',
           subtitle: 'Test your knowledge',
           iconBackgroundColor: Color(0xFFFFE680),
         ),
-        SizedBox(height: 16),
-        _GameCard(
+        const SizedBox(height: 16),
+        const _GameCard(
           icon: Icons.grid_4x4,
           title: 'Sudoku',
           subtitle: 'Solve challenging Sudoku puzzles',
@@ -46,12 +55,14 @@ class _GameCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final Color iconBackgroundColor;
+  final VoidCallback? onTap;
 
   const _GameCard({
     required this.icon,
     required this.title,
     required this.subtitle,
     required this.iconBackgroundColor,
+    this.onTap,
   });
 
   @override
@@ -80,11 +91,9 @@ class _GameCard extends StatelessWidget {
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 4),
-          child: Text(subtitle, style: TextStyle(color: Colors.grey.shade700)),
+          child: Text(subtitle, style: TextStyle(color: Colors.grey)),
         ),
-        onTap: () {
-          // TODO: 게임 상세 페이지 이동
-        },
+        onTap: onTap,
       ),
     );
   }
