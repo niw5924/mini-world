@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mini_world/game/rps/rps_result_dialog.dart';
+import 'package:mini_world/game/rps/rps_socket_service.dart';
 import 'package:mini_world/theme/app_colors.dart';
 import 'package:mini_world/widgets/mini_world_button.dart';
 
@@ -12,6 +13,7 @@ class RpsGameScreen extends StatefulWidget {
 
 class _RpsGameScreenState extends State<RpsGameScreen> {
   int? selectedIndex;
+  late RpsSocketService socket;
 
   final List<_RpsChoice> choices = const [
     _RpsChoice(emoji: '✌️', label: '가위', color: Color(0xFFBBDEFB)),
@@ -19,9 +21,37 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
     _RpsChoice(emoji: '🖐️', label: '보', color: Color(0xFFFFF9C4)),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    socket = RpsSocketService(
+      gameId: 'room123',
+      onMessage: handleServerMessage,
+    );
+    socket.connect();
+  }
+
+  void handleServerMessage(Map<String, dynamic> message) {
+    debugPrint('서버로부터 받은 메시지: $message');
+    if (message['type'] == 'result') {
+      showRpsResultDialog(
+        context,
+        message['myChoice'],
+        message['opponentChoice'],
+        message['outcome'],
+      );
+    }
+  }
+
   void submitChoice() {
     final selectedChoice = choices[selectedIndex!];
-    showRpsResultDialog(context, selectedChoice.label);
+    socket.sendChoice(selectedChoice.label);
+  }
+
+  @override
+  void dispose() {
+    socket.disconnect();
+    super.dispose();
   }
 
   @override
@@ -71,11 +101,8 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
                         ),
                         onTap: () {
                           setState(() {
-                            if (selectedIndex == index) {
-                              selectedIndex = null;
-                            } else {
-                              selectedIndex = index;
-                            }
+                            selectedIndex =
+                                selectedIndex == index ? null : index;
                           });
                         },
                       ),

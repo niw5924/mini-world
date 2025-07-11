@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
-Future<void> showRpsResultDialog(BuildContext context, String myChoiceLabel) {
+Future<void> showRpsResultDialog(
+  BuildContext context,
+  String myChoiceLabel,
+  String opponentChoiceLabel,
+  String outcome,
+) {
   return showDialog(
     context: context,
     barrierDismissible: false,
@@ -32,10 +37,28 @@ Future<void> showRpsResultDialog(BuildContext context, String myChoiceLabel) {
                   color: const Color(0xFFBBDEFB),
                 ),
                 const SizedBox(height: 16),
-                const _ResultCard(
+                _ResultCard(
                   title: '상대방 선택',
-                  valueWidget: CircularProgressIndicator(strokeWidth: 2),
-                  color: Color(0xFFF0F0F0),
+                  valueWidget: Text(
+                    opponentChoiceLabel,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  color: const Color(0xFFF0F0F0),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  outcome == 'win'
+                      ? '🎉 승리했어요!'
+                      : outcome == 'lose'
+                      ? '😢 패배했어요'
+                      : '🤝 비겼어요',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
