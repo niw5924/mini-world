@@ -1,69 +1,80 @@
 import 'package:flutter/material.dart';
+import 'rps_result_controller.dart';
 
-Future<void> showRpsResultDialog(
-  BuildContext context,
-  String myChoiceLabel,
-  String opponentChoiceLabel,
-  String outcome,
-) {
+Future<void> showRpsResultDialog({
+  required BuildContext context,
+  required RpsResultController controller,
+}) {
   return showDialog(
     context: context,
     barrierDismissible: false,
-    builder:
-        (context) => Dialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  '결과 확인',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 24),
-                _ResultCard(
-                  title: '내 선택',
-                  valueWidget: Text(
-                    myChoiceLabel,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  color: const Color(0xFFBBDEFB),
-                ),
-                const SizedBox(height: 16),
-                _ResultCard(
-                  title: '상대방 선택',
-                  valueWidget: Text(
-                    opponentChoiceLabel,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  color: const Color(0xFFF0F0F0),
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  outcome == 'win'
-                      ? '🎉 승리했어요!'
-                      : outcome == 'lose'
-                      ? '😢 패배했어요'
-                      : '🤝 비겼어요',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+    builder: (_) {
+      return ValueListenableBuilder<RpsResultState>(
+        valueListenable: controller,
+        builder: (_, state, __) {
+          return Dialog(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
             ),
-          ),
-        ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    '결과 확인',
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 24),
+                  _ResultCard(
+                    title: '내 선택',
+                    valueWidget: Text(
+                      state.myChoice,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    color: const Color(0xFFBBDEFB),
+                  ),
+                  const SizedBox(height: 16),
+                  _ResultCard(
+                    title: '상대방 선택',
+                    valueWidget:
+                        state.opponentChoice != null
+                            ? Text(
+                              state.opponentChoice!,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            )
+                            : const CircularProgressIndicator(strokeWidth: 3),
+                    color: const Color(0xFFF0F0F0),
+                  ),
+                  if (state.outcome != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 24),
+                      child: Text(
+                        state.outcome == 'win'
+                            ? '🎉 승리했어요!'
+                            : state.outcome == 'lose'
+                            ? '😢 패배했어요'
+                            : '🤝 비겼어요',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    },
   );
 }
 

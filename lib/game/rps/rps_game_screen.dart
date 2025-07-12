@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mini_world/game/rps/rps_result_dialog.dart';
-import 'package:mini_world/game/rps/rps_socket_service.dart';
 import 'package:mini_world/theme/app_colors.dart';
 import 'package:mini_world/widgets/mini_world_button.dart';
+import 'rps_result_dialog.dart';
+import 'rps_result_controller.dart';
+import 'rps_websocket_service.dart';
 
 class RpsGameScreen extends StatefulWidget {
   const RpsGameScreen({super.key});
@@ -13,7 +14,7 @@ class RpsGameScreen extends StatefulWidget {
 
 class _RpsGameScreenState extends State<RpsGameScreen> {
   int? selectedIndex;
-  late RpsSocketService socket;
+  late RpsWebSocketService socket;
 
   final List<_RpsChoice> choices = const [
     _RpsChoice(emoji: '✌️', label: '가위', color: Color(0xFFBBDEFB)),
@@ -24,28 +25,25 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
   @override
   void initState() {
     super.initState();
-    socket = RpsSocketService(
-      gameId: 'room123',
-      onMessage: handleServerMessage,
-    );
+    socket = RpsWebSocketService(gameId: 'room123');
     socket.connect();
-  }
-
-  void handleServerMessage(Map<String, dynamic> message) {
-    debugPrint('서버로부터 받은 메시지: $message');
-    if (message['type'] == 'result') {
-      showRpsResultDialog(
-        context,
-        message['myChoice'],
-        message['opponentChoice'],
-        message['outcome'],
-      );
-    }
   }
 
   void submitChoice() {
     final selectedChoice = choices[selectedIndex!];
+    final controller = RpsResultController(selectedChoice.label);
+
+    showRpsResultDialog(context: context, controller: controller);
     socket.sendChoice(selectedChoice.label);
+
+    socket.onMessage = (message) {
+      if (message['type'] == 'result') {
+        controller.updateAll(
+          opponentChoice: message['opponentChoice'],
+          outcome: message['outcome'],
+        );
+      }
+    };
   }
 
   @override
@@ -57,11 +55,7 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('가위바위보'),
-        backgroundColor: AppColors.appBarBackground,
-      ),
-      backgroundColor: AppColors.scaffoldBackground,
+      appBar: AppBar(title: const Text('가위바위보')),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
