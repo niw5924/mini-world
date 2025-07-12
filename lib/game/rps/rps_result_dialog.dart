@@ -34,7 +34,7 @@ Future<void> showRpsResultDialog({
                       state.myChoice,
                       style: const TextStyle(
                         fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     color: const Color(0xFFBBDEFB),
@@ -48,26 +48,27 @@ Future<void> showRpsResultDialog({
                               state.opponentChoice!,
                               style: const TextStyle(
                                 fontSize: 16,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.bold,
                               ),
                             )
                             : const CircularProgressIndicator(strokeWidth: 3),
                     color: const Color(0xFFF0F0F0),
                   ),
                   if (state.outcome != null) ...[
-                    const SizedBox(height: 24),
-                    Text(
-                      state.outcome == 'win'
-                          ? '🎉 승리했어요!'
-                          : state.outcome == 'lose'
-                          ? '😢 패배했어요'
-                          : '🤝 비겼어요',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24),
+                      child: Text(
+                        state.outcome == 'win'
+                            ? '🎉 승리했어요!'
+                            : state.outcome == 'lose'
+                            ? '😢 패배했어요'
+                            : '🤝 비겼어요',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 32),
                     MiniWorldButton(
                       text: '확인',
                       onPressed: () {
@@ -108,7 +109,7 @@ class _ResultCard extends StatelessWidget {
           children: [
             Text(
               '$title: ',
-              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+              style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
             ),
             Expanded(child: valueWidget),
           ],
