@@ -4,6 +4,7 @@ import 'dart:io' show Platform;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mini_world/auth/auth_service.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class RpsWebSocketService {
@@ -15,19 +16,28 @@ class RpsWebSocketService {
   RpsWebSocketService({required this.gameId});
 
   Future<void> connect() async {
+    final firebaseUser = AuthService().currentUser!;
+    final idToken = await AuthService().getIdToken(firebaseUser);
+
     final baseHttp = dotenv.env['API_URL']!;
     final wsUrl = await _resolveWsUrl(baseHttp);
     final fullUrl = '$wsUrl/rps/$gameId';
 
     _channel = WebSocketChannel.connect(Uri.parse(fullUrl));
 
+    _channel.sink.add(jsonEncode({'type': 'auth', 'idToken': idToken}));
+
     _channel.stream.listen(
       (event) {
         final data = jsonDecode(event);
         onMessage?.call(data);
       },
-      onError: (error) {},
-      onDone: () {},
+      onError: (error) {
+        print('WebSocket error: $error');
+      },
+      onDone: () {
+        print('WebSocket closed');
+      },
     );
   }
 
