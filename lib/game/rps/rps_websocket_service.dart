@@ -17,7 +17,7 @@ class RpsWebSocketService {
 
   Future<void> connect() async {
     final firebaseUser = AuthService().currentUser!;
-    final idToken = await AuthService().getIdToken(firebaseUser);
+    final firebaseIdToken = await AuthService().getIdToken(firebaseUser);
 
     final baseHttp = dotenv.env['API_URL']!;
     final wsUrl = await _resolveWsUrl(baseHttp);
@@ -25,30 +25,25 @@ class RpsWebSocketService {
 
     _channel = WebSocketChannel.connect(Uri.parse(fullUrl));
 
-    _channel.sink.add(jsonEncode({'type': 'auth', 'idToken': idToken}));
+    _channel.sink.add(
+      jsonEncode({'type': 'auth', 'firebaseIdToken': firebaseIdToken}),
+    );
 
     _channel.stream.listen(
       (event) {
         final data = jsonDecode(event);
         onMessage?.call(data);
       },
-      onError: (error) {
-        print('WebSocket error: $error');
-      },
-      onDone: () {
-        print('WebSocket closed');
-      },
+      onError: (error) => print('WebSocket error: $error'),
+      onDone: () => print('WebSocket closed'),
     );
   }
 
   void sendChoice(String choice) {
-    final message = {'type': 'choice', 'data': choice};
-    _channel.sink.add(jsonEncode(message));
+    _channel.sink.add(jsonEncode({'type': 'choice', 'data': choice}));
   }
 
-  void disconnect() {
-    _channel.sink.close();
-  }
+  void disconnect() => _channel.sink.close();
 
   Future<String> _resolveWsUrl(String httpUrl) async {
     final uri = Uri.parse(httpUrl);
