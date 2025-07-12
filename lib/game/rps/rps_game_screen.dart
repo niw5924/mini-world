@@ -71,7 +71,7 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
                   children: List.generate(choices.length, (index) {
                     final choice = choices[index];
                     final isSelected = selectedIndex == index;
-        
+
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 16),
                       child: Card(

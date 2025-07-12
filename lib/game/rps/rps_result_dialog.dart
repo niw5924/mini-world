@@ -51,11 +51,7 @@ Future<void> showRpsResultDialog({
                                 fontWeight: FontWeight.w500,
                               ),
                             )
-                            : const SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(strokeWidth: 3),
-                            ),
+                            : const CircularProgressIndicator(strokeWidth: 3),
                     color: const Color(0xFFF0F0F0),
                   ),
                   if (state.outcome != null) ...[
@@ -74,7 +70,10 @@ Future<void> showRpsResultDialog({
                     const SizedBox(height: 32),
                     MiniWorldButton(
                       text: '확인',
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: () {
+                        Navigator.of(context).pop(); // 결과창 닫기
+                        Navigator.of(context).pop(); // 게임화면 닫기
+                      },
                     ),
                   ],
                 ],
