@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mini_world/widgets/mini_world_button.dart';
 import 'rps_result_controller.dart';
 
 Future<void> showRpsResultDialog({
@@ -50,24 +51,32 @@ Future<void> showRpsResultDialog({
                                 fontWeight: FontWeight.w500,
                               ),
                             )
-                            : const CircularProgressIndicator(strokeWidth: 3),
+                            : const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 3),
+                            ),
                     color: const Color(0xFFF0F0F0),
                   ),
-                  if (state.outcome != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 24),
-                      child: Text(
-                        state.outcome == 'win'
-                            ? '🎉 승리했어요!'
-                            : state.outcome == 'lose'
-                            ? '😢 패배했어요'
-                            : '🤝 비겼어요',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                  if (state.outcome != null) ...[
+                    const SizedBox(height: 24),
+                    Text(
+                      state.outcome == 'win'
+                          ? '🎉 승리했어요!'
+                          : state.outcome == 'lose'
+                          ? '😢 패배했어요'
+                          : '🤝 비겼어요',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
+                    const SizedBox(height: 32),
+                    MiniWorldButton(
+                      text: '확인',
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
                 ],
               ),
             ),
