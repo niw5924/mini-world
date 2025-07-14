@@ -33,9 +33,6 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
     final selectedChoice = choices[selectedIndex!];
     final controller = RpsResultController(selectedChoice.label);
 
-    showRpsResultDialog(context: context, controller: controller);
-    socket.sendChoice(selectedChoice.label);
-
     socket.onMessage = (message) {
       if (message['type'] == 'result') {
         controller.updateAll(
@@ -44,6 +41,9 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
         );
       }
     };
+
+    showRpsResultDialog(context: context, controller: controller);
+    socket.sendChoice(selectedChoice.label);
   }
 
   @override
