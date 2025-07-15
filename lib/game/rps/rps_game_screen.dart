@@ -13,9 +13,10 @@ class RpsGameScreen extends StatefulWidget {
 }
 
 class _RpsGameScreenState extends State<RpsGameScreen> {
-  int? selectedIndex;
-  late RpsWebSocketService socket;
   late RpsResultController _resultController;
+  late RpsWebSocketService socket;
+  int? selectedIndex;
+  List<String> joinedUsers = [];
 
   final List<_RpsChoice> choices = const [
     _RpsChoice(emoji: '✌️', label: '가위', color: Color(0xFFBBDEFB)),
@@ -29,11 +30,18 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
     _resultController = RpsResultController();
     socket = RpsWebSocketService(gameId: 'room123');
     socket.onMessage = (message) {
-      if (message['type'] == 'result') {
-        _resultController.update(
-          opponentChoice: message['opponentChoice'],
-          outcome: message['outcome'],
-        );
+      switch (message['type']) {
+        case 'result':
+          _resultController.update(
+            opponentChoice: message['opponentChoice'],
+            outcome: message['outcome'],
+          );
+          break;
+        case 'joinedUsers':
+          setState(() {
+            joinedUsers = List<String>.from(message['users']);
+          });
+          break;
       }
     };
     socket.connect();
@@ -65,6 +73,14 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
           padding: const EdgeInsets.all(24),
           child: Column(
             children: [
+              if (joinedUsers.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Text(
+                    '현재 참여자: ${joinedUsers.join(', ')}',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -76,13 +92,9 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
                       child: Card(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
-                          side:
-                              isSelected
-                                  ? BorderSide(
-                                    color: AppColors.primary,
-                                    width: 3,
-                                  )
-                                  : BorderSide.none,
+                          side: isSelected
+                              ? BorderSide(color: AppColors.primary, width: 3)
+                              : BorderSide.none,
                         ),
                         clipBehavior: Clip.antiAlias,
                         color: choice.color,
@@ -100,7 +112,7 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
                           onTap: () {
                             setState(() {
                               selectedIndex =
-                                  selectedIndex == index ? null : index;
+                              selectedIndex == index ? null : index;
                             });
                           },
                         ),
