@@ -38,13 +38,16 @@ Future<void> showRpsResultDialog({
                     const SizedBox(height: 24),
                     _ResultCard(
                       title: '내 선택',
-                      valueWidget: Text(
-                        state.myChoice,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      valueWidget:
+                          state.myChoice != null
+                              ? Text(
+                                state.myChoice!,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              )
+                              : const CircularProgressIndicator(strokeWidth: 3),
                       color: const Color(0xFFBBDEFB),
                     ),
                     const SizedBox(height: 16),
@@ -80,8 +83,8 @@ Future<void> showRpsResultDialog({
                       MiniWorldButton(
                         text: '확인',
                         onPressed: () {
-                          Navigator.of(context).pop(); // 결과창 닫기
-                          Navigator.of(context).pop(); // 게임화면 닫기
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
                         },
                       ),
                     ],

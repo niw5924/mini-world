@@ -15,6 +15,7 @@ class RpsGameScreen extends StatefulWidget {
 class _RpsGameScreenState extends State<RpsGameScreen> {
   int? selectedIndex;
   late RpsWebSocketService socket;
+  late RpsResultController _resultController;
 
   final List<_RpsChoice> choices = const [
     _RpsChoice(emoji: '✌️', label: '가위', color: Color(0xFFBBDEFB)),
@@ -25,24 +26,23 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
   @override
   void initState() {
     super.initState();
+    _resultController = RpsResultController();
     socket = RpsWebSocketService(gameId: 'room123');
-    socket.connect();
-  }
-
-  void submitChoice() {
-    final selectedChoice = choices[selectedIndex!];
-    final controller = RpsResultController(selectedChoice.label);
-
     socket.onMessage = (message) {
       if (message['type'] == 'result') {
-        controller.updateAll(
+        _resultController.update(
           opponentChoice: message['opponentChoice'],
           outcome: message['outcome'],
         );
       }
     };
+    socket.connect();
+  }
 
-    showRpsResultDialog(context: context, controller: controller);
+  void submitChoice() {
+    final selectedChoice = choices[selectedIndex!];
+    _resultController.update(myChoice: selectedChoice.label);
+    showRpsResultDialog(context: context, controller: _resultController);
     socket.sendChoice(selectedChoice.label);
   }
 
@@ -71,7 +71,6 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
                   children: List.generate(choices.length, (index) {
                     final choice = choices[index];
                     final isSelected = selectedIndex == index;
-
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 16),
                       child: Card(
@@ -81,7 +80,7 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
                               isSelected
                                   ? BorderSide(
                                     color: AppColors.primary,
-                                    width: 3.0,
+                                    width: 3,
                                   )
                                   : BorderSide.none,
                         ),

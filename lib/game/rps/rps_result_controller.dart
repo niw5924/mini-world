@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
 class RpsResultState {
-  final String myChoice;
+  final String? myChoice;
   final String? opponentChoice;
   final String? outcome;
 
-  RpsResultState({required this.myChoice, this.opponentChoice, this.outcome});
+  const RpsResultState({this.myChoice, this.opponentChoice, this.outcome});
 
-  RpsResultState copyWith({String? opponentChoice, String? outcome}) {
+  RpsResultState copyWith({
+    String? myChoice,
+    String? opponentChoice,
+    String? outcome,
+  }) {
     return RpsResultState(
-      myChoice: myChoice,
+      myChoice: myChoice ?? this.myChoice,
       opponentChoice: opponentChoice ?? this.opponentChoice,
       outcome: outcome ?? this.outcome,
     );
@@ -17,10 +21,13 @@ class RpsResultState {
 }
 
 class RpsResultController extends ValueNotifier<RpsResultState> {
-  RpsResultController(String myChoice)
-    : super(RpsResultState(myChoice: myChoice));
+  RpsResultController() : super(const RpsResultState());
 
-  void updateAll({required String opponentChoice, required String outcome}) {
-    value = value.copyWith(opponentChoice: opponentChoice, outcome: outcome);
+  void update({String? myChoice, String? opponentChoice, String? outcome}) {
+    value = value.copyWith(
+      myChoice: myChoice,
+      opponentChoice: opponentChoice,
+      outcome: outcome,
+    );
   }
 }
