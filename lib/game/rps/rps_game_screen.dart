@@ -13,10 +13,11 @@ class RpsGameScreen extends StatefulWidget {
 }
 
 class _RpsGameScreenState extends State<RpsGameScreen> {
-  late RpsResultController _resultController;
   late RpsWebSocketService socket;
+  final RpsResultController controller = RpsResultController();
+
   int? selectedIndex;
-  List<String> joinedUsers = [];
+  List<_PlayerInfo> joinedUsers = [];
 
   final List<_RpsChoice> choices = const [
     _RpsChoice(emoji: '✌️', label: '가위', color: Color(0xFFBBDEFB)),
@@ -27,36 +28,47 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
   @override
   void initState() {
     super.initState();
-    _resultController = RpsResultController();
+
     socket = RpsWebSocketService(gameId: 'room123');
     socket.onMessage = (message) {
       switch (message['type']) {
+        case 'joinedUsers':
+          final users = message['users'] as List;
+          setState(() {
+            joinedUsers =
+                users.map((u) {
+                  return _PlayerInfo(
+                    uid: u['uid'],
+                    name: u['name'],
+                    photoUrl: u['photoUrl'],
+                  );
+                }).toList();
+          });
+          break;
         case 'result':
-          _resultController.update(
+          controller.update(
+            myChoice: message['myChoice'],
             opponentChoice: message['opponentChoice'],
             outcome: message['outcome'],
           );
           break;
-        case 'joinedUsers':
-          setState(() {
-            joinedUsers = List<String>.from(message['users']);
-          });
-          break;
       }
     };
+
     socket.connect();
   }
 
   void submitChoice() {
     final selectedChoice = choices[selectedIndex!];
-    _resultController.update(myChoice: selectedChoice.label);
-    showRpsResultDialog(context: context, controller: _resultController);
+    controller.update(myChoice: selectedChoice.label);
+    showRpsResultDialog(context: context, controller: controller);
     socket.sendChoice(selectedChoice.label);
   }
 
   @override
   void dispose() {
     socket.disconnect();
+    controller.dispose();
     super.dispose();
   }
 
@@ -74,27 +86,26 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
           child: Column(
             children: [
               if (joinedUsers.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: Text(
-                    '현재 참여자: ${joinedUsers.join(', ')}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                ),
+                _JoinedUsersProfile(users: joinedUsers),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(choices.length, (index) {
                     final choice = choices[index];
                     final isSelected = selectedIndex == index;
+
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 16),
                       child: Card(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
-                          side: isSelected
-                              ? BorderSide(color: AppColors.primary, width: 3)
-                              : BorderSide.none,
+                          side:
+                              isSelected
+                                  ? BorderSide(
+                                    color: AppColors.primary,
+                                    width: 3.0,
+                                  )
+                                  : BorderSide.none,
                         ),
                         clipBehavior: Clip.antiAlias,
                         color: choice.color,
@@ -112,7 +123,7 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
                           onTap: () {
                             setState(() {
                               selectedIndex =
-                              selectedIndex == index ? null : index;
+                                  selectedIndex == index ? null : index;
                             });
                           },
                         ),
@@ -144,4 +155,48 @@ class _RpsChoice {
     required this.label,
     required this.color,
   });
+}
+
+class _PlayerInfo {
+  final String uid;
+  final String name;
+  final String photoUrl;
+
+  const _PlayerInfo({
+    required this.uid,
+    required this.name,
+    required this.photoUrl,
+  });
+}
+
+class _JoinedUsersProfile extends StatelessWidget {
+  final List<_PlayerInfo> users;
+
+  const _JoinedUsersProfile({required this.users});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text('참여 인원: ${users.length}명'),
+        const SizedBox(height: 8),
+        ...users.map((user) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(user.photoUrl),
+                ),
+                const SizedBox(width: 12),
+                Text(user.name),
+              ],
+            ),
+          );
+        }),
+      ],
+    );
+  }
 }
