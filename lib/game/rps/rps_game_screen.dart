@@ -50,6 +50,7 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
             myChoice: message['myChoice'],
             opponentChoice: message['opponentChoice'],
             outcome: message['outcome'],
+            rankPointDelta: message['rankPointDelta'],
           );
           break;
       }

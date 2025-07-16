@@ -68,16 +68,37 @@ Future<void> showRpsResultDialog({
                     if (state.outcome != null) ...[
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 24),
-                        child: Text(
-                          state.outcome == 'win'
-                              ? '🎉 승리했어요!'
-                              : state.outcome == 'lose'
-                              ? '😢 패배했어요'
-                              : '🤝 비겼어요',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        child: Column(
+                          children: [
+                            Text(
+                              state.outcome == 'win'
+                                  ? '🎉 승리했어요!'
+                                  : state.outcome == 'lose'
+                                  ? '😢 패배했어요'
+                                  : '🤝 비겼어요',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            if (state.rankPointDelta != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 12),
+                                child: Text(
+                                  '랭크 점수: ${state.rankPointDelta! >= 0 ? '+${state.rankPointDelta}' : '${state.rankPointDelta}'}',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        state.rankPointDelta! > 0
+                                            ? Colors.green
+                                            : state.rankPointDelta! < 0
+                                            ? Colors.red
+                                            : Colors.grey,
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
                       ),
                       MiniWorldButton(
