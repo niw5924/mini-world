@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mini_world/auth/auth_service.dart';
-import 'package:mini_world/api/record_api.dart';
 import 'package:mini_world/api/user_api.dart';
+import 'package:mini_world/profile/record/record_screen.dart';
 import 'package:mini_world/theme/app_colors.dart';
 
 class ProfileTab extends StatefulWidget {
@@ -146,21 +146,10 @@ class _ProfileTabState extends State<ProfileTab> {
         ),
         const SizedBox(height: 12),
         ElevatedButton.icon(
-          onPressed: () async {
-            try {
-              final firebaseIdToken = await AuthService().getIdToken(
-                firebaseUser,
-              );
-              final records = await RecordApi.me(firebaseIdToken);
-              print('📦 내 기록: $records');
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(const SnackBar(content: Text('기록이 콘솔에 출력되었습니다')));
-            } catch (e) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text('기록 불러오기 실패: $e')));
-            }
+          onPressed: () {
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const RecordScreen()));
           },
           icon: const Icon(Icons.list_alt),
           label: const Text('내 기록 보기'),
