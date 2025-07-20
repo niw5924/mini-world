@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mini_world/api/record_api.dart';
 import 'package:mini_world/auth/auth_service.dart';
+import 'package:mini_world/constants/game_enums.dart';
 import 'package:mini_world/theme/app_colors.dart';
 
 class RecordScreen extends StatefulWidget {
@@ -70,6 +71,9 @@ class _RecordScreenState extends State<RecordScreen> {
                 'yyyy-MM-dd HH:mm',
               ).format(DateTime.parse(record['created_at']).toLocal());
 
+              final gameMode = GameMode.fromKey(record['game_mode']);
+              final gameResult = GameResult.fromKey(record['result']);
+
               return Card(
                 color: AppColors.cardBackground,
                 shape: RoundedRectangleBorder(
@@ -78,23 +82,52 @@ class _RecordScreenState extends State<RecordScreen> {
                 ),
                 elevation: 2,
                 margin: const EdgeInsets.only(bottom: 12),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(record['opponent_photo_url']),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12.0,
+                    horizontal: 16.0,
                   ),
-                  title: Text(
-                    record['opponent_name'],
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
-                      Text('${record['game_mode']} - ${record['result']}'),
-                      Text('점수 변화: ${record['rank_point_delta']}'),
-                      Text('시간: $formattedTime'),
+                      Column(
+                        children: [
+                          CircleAvatar(
+                            backgroundImage: NetworkImage(
+                              record['opponent_photo_url'],
+                            ),
+                            radius: 24,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            record['opponent_name'],
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              gameMode.label,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4.0),
+                              child: Text('결과: ${gameResult.label}'),
+                            ),
+                            const SizedBox(height: 4),
+                            Text('점수 변화: ${record['rank_point_delta']}'),
+                            Text('시간: $formattedTime'),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
