@@ -98,13 +98,7 @@ class _RecordScreenState extends State<RecordScreen> {
                             radius: 24,
                           ),
                           const SizedBox(height: 4),
-                          Text(
-                            record['opponent_name'],
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
+                          Text('VS ${record['opponent_name']}'),
                         ],
                       ),
                       const SizedBox(width: 16),
@@ -118,11 +112,8 @@ class _RecordScreenState extends State<RecordScreen> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4.0),
-                              child: Text('결과: ${gameResult.label}'),
-                            ),
                             const SizedBox(height: 4),
+                            Text('결과: ${gameResult.label}'),
                             Text('점수 변화: ${record['rank_point_delta']}'),
                             Text('시간: $formattedTime'),
                           ],
