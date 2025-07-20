@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mini_world/theme/app_colors.dart';
+import 'package:mini_world/constants/app_colors.dart';
 
 class MiniWorldButton extends StatelessWidget {
   final String text;

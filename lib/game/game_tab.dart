@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mini_world/game/rps/rps_game_screen.dart';
-import 'package:mini_world/theme/app_colors.dart';
+import 'package:mini_world/constants/app_colors.dart';
 
 class GameTab extends StatelessWidget {
   const GameTab({super.key});

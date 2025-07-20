@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:mini_world/api/record_api.dart';
 import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/constants/game_enums.dart';
-import 'package:mini_world/theme/app_colors.dart';
+import 'package:mini_world/constants/app_colors.dart';
 
 class RecordScreen extends StatefulWidget {
   const RecordScreen({super.key});

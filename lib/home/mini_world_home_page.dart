@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mini_world/theme/app_colors.dart';
+import 'package:mini_world/constants/app_colors.dart';
 import '../game/game_tab.dart';
 import '../ranking/ranking_tab.dart';
 import '../profile/profile_tab.dart';

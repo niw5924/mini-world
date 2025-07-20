@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/api/user_api.dart';
 import 'package:mini_world/profile/record/record_screen.dart';
-import 'package:mini_world/theme/app_colors.dart';
+import 'package:mini_world/constants/app_colors.dart';
 
 class ProfileTab extends StatefulWidget {
   const ProfileTab({super.key});
