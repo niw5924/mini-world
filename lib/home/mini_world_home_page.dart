@@ -31,6 +31,9 @@ class _MiniWorldHomePageState extends State<MiniWorldHomePage> {
       body: SafeArea(child: _tabs[_selectedIndex]),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
+        backgroundColor: AppColors.bottomNavBackground,
+        selectedItemColor: AppColors.primary,
+        unselectedItemColor: Colors.black,
         onTap: (index) {
           setState(() {
             _selectedIndex = index;
