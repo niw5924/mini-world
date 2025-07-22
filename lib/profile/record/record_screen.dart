@@ -52,9 +52,9 @@ class _RecordScreenState extends State<RecordScreen> {
 
     try {
       final firebaseUser = AuthService().currentUser!;
-      final idToken = await AuthService().getIdToken(firebaseUser);
+      final firebaseIdToken = await AuthService().getIdToken(firebaseUser);
       final result = await RecordApi.me(
-        firebaseIdToken: idToken,
+        firebaseIdToken: firebaseIdToken,
         limit: limit,
         offset: offset,
       );
