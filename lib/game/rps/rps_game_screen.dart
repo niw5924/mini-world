@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mini_world/api/rps_api.dart';
+import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/constants/app_colors.dart';
 import 'package:mini_world/widgets/mini_world_button.dart';
 import 'rps_result_dialog.dart';
@@ -28,8 +30,16 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
   @override
   void initState() {
     super.initState();
+    initGame();
+  }
 
-    socket = RpsWebSocketService(gameId: 'room123');
+  Future<void> initGame() async {
+    final firebaseUser = AuthService().currentUser!;
+    final firebaseIdToken = await AuthService().getIdToken(firebaseUser);
+
+    final gameId = await RpsApi.join(firebaseIdToken);
+
+    socket = RpsWebSocketService(gameId: gameId);
     socket.onMessage = (message) {
       switch (message['type']) {
         case 'joinedUsers':
@@ -45,6 +55,7 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
                 }).toList();
           });
           break;
+
         case 'result':
           controller.update(
             myChoice: message['myChoice'],
