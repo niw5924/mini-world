@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mini_world/game/card_flip/card_flip_game_screen.dart';
 import 'package:mini_world/game/rps/rps_game_screen.dart';
 import 'package:mini_world/constants/app_colors.dart';
 
@@ -11,13 +12,6 @@ class GameTab extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
-        const _GameCard(
-          icon: Icons.grid_3x3,
-          title: 'Tic-Tac-Toe',
-          subtitle: 'Play classic Tic-Tac-Toe',
-          iconBackgroundColor: Color(0xFFD0E8FF),
-        ),
-        const SizedBox(height: 16),
         _GameCard(
           icon: Icons.front_hand,
           title: 'Rock Paper Scissors',
@@ -30,6 +24,27 @@ class GameTab extends StatelessWidget {
               MaterialPageRoute(builder: (_) => const RpsGameScreen()),
             );
           },
+        ),
+        const SizedBox(height: 16),
+        _GameCard(
+          icon: Icons.style,
+          title: 'Card Flip',
+          subtitle: 'Find matching pairs from 10 hidden cards',
+          iconBackgroundColor: Color(0xFFFFD6A5),
+          onTap: () {
+            HapticFeedback.mediumImpact();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const CardFlipGameScreen()),
+            );
+          },
+        ),
+        const SizedBox(height: 16),
+        const _GameCard(
+          icon: Icons.grid_3x3,
+          title: 'Tic-Tac-Toe',
+          subtitle: 'Play classic Tic-Tac-Toe',
+          iconBackgroundColor: Color(0xFFD0E8FF),
         ),
         const SizedBox(height: 16),
         const _GameCard(
