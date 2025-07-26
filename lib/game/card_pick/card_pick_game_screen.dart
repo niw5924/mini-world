@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:mini_world/constants/app_colors.dart';
 import 'package:mini_world/widgets/mini_world_button.dart';
@@ -10,68 +9,35 @@ class CardPickGameScreen extends StatefulWidget {
   State<CardPickGameScreen> createState() => _CardPickGameScreenState();
 }
 
-class _CardPickGameScreenState extends State<CardPickGameScreen>
-    with TickerProviderStateMixin {
+class _CardPickGameScreenState extends State<CardPickGameScreen> {
   late List<_CardItem> cards;
-  late List<AnimationController> controllers;
-  late List<Animation<double>> animations;
 
   @override
   void initState() {
     super.initState();
     final ids = List.generate(10, (index) => index + 1)..shuffle();
-    cards = ids.map((id) => _CardItem(id: id, isFlipped: false)).toList();
+    cards = ids.map((id) => _CardItem(id: id, isSelected: false)).toList();
+  }
 
-    controllers = List.generate(cards.length, (_) {
-      return AnimationController(
-        vsync: this,
-        duration: const Duration(milliseconds: 300),
-      );
+  void _toggleCard(int index) {
+    setState(() {
+      if (cards[index].isSelected) {
+        cards[index].isSelected = false;
+      } else {
+        for (int i = 0; i < cards.length; i++) {
+          cards[i].isSelected = i == index;
+        }
+      }
     });
-
-    animations =
-        controllers
-            .map(
-              (controller) =>
-                  Tween<double>(begin: 0.0, end: pi).animate(controller),
-            )
-            .toList();
-  }
-
-  @override
-  void dispose() {
-    for (final controller in controllers) {
-      controller.dispose();
-    }
-    super.dispose();
-  }
-
-  void _flipCard(int index) {
-    final controller = controllers[index];
-    final card = cards[index];
-
-    if (controller.isAnimating) return;
-
-    if (!card.isFlipped) {
-      controller.forward().then((_) {
-        setState(() {
-          card.isFlipped = true;
-        });
-      });
-    } else {
-      controller.reverse().then((_) {
-        setState(() {
-          card.isFlipped = false;
-        });
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isAnyCardSelected = cards.any((card) => card.isSelected);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('카드 뒤집기'),
+        title: const Text('카드 뽑기'),
         backgroundColor: AppColors.appBarBackground,
       ),
       backgroundColor: AppColors.scaffoldBackground,
@@ -81,9 +47,10 @@ class _CardPickGameScreenState extends State<CardPickGameScreen>
           child: Column(
             children: [
               const Text(
-                '카드 중 하나를 선택해보세요!',
+                '카드를 하나 뽑아보세요!',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
+              const SizedBox(height: 20),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -101,35 +68,11 @@ class _CardPickGameScreenState extends State<CardPickGameScreen>
                           ),
                       itemBuilder: (context, index) {
                         final card = cards[index];
-                        final animation = animations[index];
-
                         return GestureDetector(
-                          onTap: () => _flipCard(index),
-                          child: AnimatedBuilder(
-                            animation: animation,
-                            builder: (context, _) {
-                              final angle = animation.value;
-                              final isFront = angle <= pi / 2;
-
-                              return Transform(
-                                alignment: Alignment.center,
-                                transform: Matrix4.rotationY(angle),
-                                child:
-                                    isFront
-                                        ? _buildCardFace(
-                                          text: '?',
-                                          isFront: true,
-                                        )
-                                        : Transform(
-                                          alignment: Alignment.center,
-                                          transform: Matrix4.rotationY(pi),
-                                          child: _buildCardFace(
-                                            text: card.id.toString(),
-                                            isFront: false,
-                                          ),
-                                        ),
-                              );
-                            },
+                          onTap: () => _toggleCard(index),
+                          child: _buildCardFace(
+                            text: '?',
+                            isSelected: card.isSelected,
                           ),
                         );
                       },
@@ -137,7 +80,17 @@ class _CardPickGameScreenState extends State<CardPickGameScreen>
                   ],
                 ),
               ),
-              MiniWorldButton(text: '제출하기', enabled: false, onPressed: () {}),
+              MiniWorldButton(
+                text: '제출하기',
+                enabled: isAnyCardSelected,
+                onPressed: () {
+                  final selectedCard = cards.firstWhere(
+                    (card) => card.isSelected,
+                  );
+                  debugPrint('뽑은 카드 ID: ${selectedCard.id}');
+                  // TODO: 뽑은 카드 처리 로직
+                },
+              ),
             ],
           ),
         ),
@@ -145,17 +98,17 @@ class _CardPickGameScreenState extends State<CardPickGameScreen>
     );
   }
 
-  Widget _buildCardFace({required String text, required bool isFront}) {
+  Widget _buildCardFace({required String text, required bool isSelected}) {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side:
-            isFront
-                ? BorderSide.none
-                : BorderSide(color: AppColors.primary, width: 3.0),
+            isSelected
+                ? BorderSide(color: AppColors.primary, width: 3.0)
+                : BorderSide.none,
       ),
       clipBehavior: Clip.antiAlias,
-      color: isFront ? Colors.grey.shade300 : AppColors.secondary,
+      color: AppColors.secondary,
       child: Center(
         child: Text(
           text,
@@ -168,7 +121,7 @@ class _CardPickGameScreenState extends State<CardPickGameScreen>
 
 class _CardItem {
   final int id;
-  bool isFlipped;
+  bool isSelected;
 
-  _CardItem({required this.id, required this.isFlipped});
+  _CardItem({required this.id, required this.isSelected});
 }
