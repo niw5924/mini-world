@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:mini_world/constants/app_colors.dart';
 import 'package:mini_world/widgets/mini_world_button.dart';
 
-class CardFlipGameScreen extends StatefulWidget {
-  const CardFlipGameScreen({super.key});
+class CardPickGameScreen extends StatefulWidget {
+  const CardPickGameScreen({super.key});
 
   @override
-  State<CardFlipGameScreen> createState() => _CardFlipGameScreenState();
+  State<CardPickGameScreen> createState() => _CardPickGameScreenState();
 }
 
-class _CardFlipGameScreenState extends State<CardFlipGameScreen>
+class _CardPickGameScreenState extends State<CardPickGameScreen>
     with TickerProviderStateMixin {
   late List<_CardItem> cards;
   late List<AnimationController> controllers;

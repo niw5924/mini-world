@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mini_world/game/card_flip/card_flip_game_screen.dart';
+import 'package:mini_world/game/card_pick/card_pick_game_screen.dart';
 import 'package:mini_world/game/rps/rps_game_screen.dart';
 import 'package:mini_world/constants/app_colors.dart';
 
@@ -28,38 +28,38 @@ class GameTab extends StatelessWidget {
         const SizedBox(height: 16),
         _GameCard(
           icon: Icons.style,
-          title: 'Card Flip',
-          subtitle: 'Find matching pairs from 10 hidden cards',
+          title: 'Pick a Card',
+          subtitle: 'Choose one from 10 hidden cards!',
           iconBackgroundColor: Color(0xFFFFD6A5),
           onTap: () {
             HapticFeedback.mediumImpact();
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const CardFlipGameScreen()),
+              MaterialPageRoute(builder: (_) => const CardPickGameScreen()),
             );
           },
         ),
-        const SizedBox(height: 16),
-        const _GameCard(
-          icon: Icons.grid_3x3,
-          title: 'Tic-Tac-Toe',
-          subtitle: 'Play classic Tic-Tac-Toe',
-          iconBackgroundColor: Color(0xFFD0E8FF),
-        ),
-        const SizedBox(height: 16),
-        const _GameCard(
-          icon: Icons.quiz,
-          title: 'Trivia',
-          subtitle: 'Test your knowledge',
-          iconBackgroundColor: Color(0xFFFFE680),
-        ),
-        const SizedBox(height: 16),
-        const _GameCard(
-          icon: Icons.grid_4x4,
-          title: 'Sudoku',
-          subtitle: 'Solve challenging Sudoku puzzles',
-          iconBackgroundColor: Color(0xFFB2E8B2),
-        ),
+        // const SizedBox(height: 16),
+        // const _GameCard(
+        //   icon: Icons.grid_3x3,
+        //   title: 'Tic-Tac-Toe',
+        //   subtitle: 'Play classic Tic-Tac-Toe',
+        //   iconBackgroundColor: Color(0xFFD0E8FF),
+        // ),
+        // const SizedBox(height: 16),
+        // const _GameCard(
+        //   icon: Icons.quiz,
+        //   title: 'Trivia',
+        //   subtitle: 'Test your knowledge',
+        //   iconBackgroundColor: Color(0xFFFFE680),
+        // ),
+        // const SizedBox(height: 16),
+        // const _GameCard(
+        //   icon: Icons.grid_4x4,
+        //   title: 'Sudoku',
+        //   subtitle: 'Solve challenging Sudoku puzzles',
+        //   iconBackgroundColor: Color(0xFFB2E8B2),
+        // ),
       ],
     );
   }
