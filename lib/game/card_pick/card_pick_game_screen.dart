@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mini_world/api/card_pick_api.dart';
+import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/constants/app_colors.dart';
 import 'package:mini_world/widgets/mini_world_button.dart';
+import 'card_pick_result_controller.dart';
+import 'card_pick_result_dialog.dart';
+import 'card_pick_websocket_service.dart';
 
 class CardPickGameScreen extends StatefulWidget {
   const CardPickGameScreen({super.key});
@@ -10,20 +15,78 @@ class CardPickGameScreen extends StatefulWidget {
 }
 
 class _CardPickGameScreenState extends State<CardPickGameScreen> {
-  late List<_CardItem> cards;
+  late CardPickWebSocketService socket;
+  final CardPickResultController controller = CardPickResultController();
+
+  List<_CardItem> cards = [];
+  List<_PlayerInfo> joinedUsers = [];
+  int? selectedIndex;
 
   @override
   void initState() {
     super.initState();
+    _initCards();
+    initCardPickGame();
+  }
+
+  void _initCards() {
     final ids = List.generate(10, (index) => index + 1)..shuffle();
     cards = ids.map((id) => _CardItem(id: id, isSelected: false)).toList();
   }
 
+  Future<void> initCardPickGame() async {
+    final firebaseUser = AuthService().currentUser!;
+    final firebaseIdToken = await AuthService().getIdToken(firebaseUser);
+    final gameId = await CardPickApi.join(firebaseIdToken);
+
+    socket = CardPickWebSocketService(gameId: gameId);
+    socket.onMessage = (message) {
+      switch (message['type']) {
+        case 'joinedUsers':
+          final users = message['users'] as List;
+          setState(() {
+            joinedUsers =
+                users
+                    .map(
+                      (u) => _PlayerInfo(
+                        uid: u['uid'],
+                        name: u['name'],
+                        photoUrl: u['photoUrl'],
+                      ),
+                    )
+                    .toList();
+          });
+          break;
+        case 'result':
+          controller.update(
+            myChoice: message['myChoice'],
+            opponentChoice: message['opponentChoice'],
+            outcome: message['outcome'],
+            rankPointDelta: message['rankPointDelta'],
+          );
+          break;
+      }
+    };
+
+    await socket.connect();
+  }
+
+  void _submitChoice() {
+    final selectedCard = cards[selectedIndex!];
+    controller.update(myChoice: selectedCard.id);
+    showCardPickResultDialog(context: context, controller: controller);
+    socket.sendChoice(selectedCard.id);
+  }
+
   void _toggleCard(int index) {
     setState(() {
-      if (cards[index].isSelected) {
-        cards[index].isSelected = false;
+      if (selectedIndex == index) {
+        selectedIndex = null;
+        for (final card in cards) {
+          card.isSelected = false;
+        }
       } else {
+        selectedIndex = index;
         for (int i = 0; i < cards.length; i++) {
           cards[i].isSelected = i == index;
         }
@@ -32,9 +95,14 @@ class _CardPickGameScreenState extends State<CardPickGameScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final isAnyCardSelected = cards.any((card) => card.isSelected);
+  void dispose() {
+    socket.disconnect();
+    controller.dispose();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('카드 뽑기'),
@@ -46,15 +114,21 @@ class _CardPickGameScreenState extends State<CardPickGameScreen> {
           padding: const EdgeInsets.all(24),
           child: Column(
             children: [
-              const Text(
-                '카드를 하나 뽑아보세요!',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              ),
+              if (joinedUsers.isNotEmpty)
+                _JoinedUsersProfile(users: joinedUsers),
               const SizedBox(height: 20),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    const Text(
+                      '카드를 하나 뽑아보세요!',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -80,16 +154,11 @@ class _CardPickGameScreenState extends State<CardPickGameScreen> {
                   ],
                 ),
               ),
+              const SizedBox(height: 20),
               MiniWorldButton(
                 text: '제출하기',
-                enabled: isAnyCardSelected,
-                onPressed: () {
-                  final selectedCard = cards.firstWhere(
-                    (card) => card.isSelected,
-                  );
-                  debugPrint('뽑은 카드 ID: ${selectedCard.id}');
-                  // TODO: 뽑은 카드 처리 로직
-                },
+                enabled: selectedIndex != null,
+                onPressed: _submitChoice,
               ),
             ],
           ),
@@ -124,4 +193,48 @@ class _CardItem {
   bool isSelected;
 
   _CardItem({required this.id, required this.isSelected});
+}
+
+class _PlayerInfo {
+  final String uid;
+  final String name;
+  final String photoUrl;
+
+  const _PlayerInfo({
+    required this.uid,
+    required this.name,
+    required this.photoUrl,
+  });
+}
+
+class _JoinedUsersProfile extends StatelessWidget {
+  final List<_PlayerInfo> users;
+
+  const _JoinedUsersProfile({required this.users});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text('참여 인원: ${users.length}명'),
+        const SizedBox(height: 8),
+        ...users.map((user) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(user.photoUrl),
+                ),
+                const SizedBox(width: 12),
+                Text(user.name),
+              ],
+            ),
+          );
+        }),
+      ],
+    );
+  }
 }
