@@ -30,10 +30,10 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
   @override
   void initState() {
     super.initState();
-    initGame();
+    initRpsGame();
   }
 
-  Future<void> initGame() async {
+  Future<void> initRpsGame() async {
     final firebaseUser = AuthService().currentUser!;
     final firebaseIdToken = await AuthService().getIdToken(firebaseUser);
 
