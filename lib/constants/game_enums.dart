@@ -1,5 +1,6 @@
 enum GameMode {
-  rps('rps', '가위바위보');
+  rps('rps', '가위바위보'),
+  cardPick('card_pick', '카드 뽑기');
 
   final String key;
   final String label;
