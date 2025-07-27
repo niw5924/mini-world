@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mini_world/api/rps_api.dart';
 import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/constants/app_colors.dart';
+import 'package:mini_world/game/joined_users_profile.dart';
 import 'package:mini_world/widgets/mini_world_button.dart';
 import 'rps_result_dialog.dart';
 import 'rps_result_controller.dart';
@@ -19,7 +20,7 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
   final RpsResultController controller = RpsResultController();
 
   int? selectedIndex;
-  List<_PlayerInfo> joinedUsers = [];
+  List<PlayerInfo> joinedUsers = [];
 
   final List<_RpsChoice> choices = const [
     _RpsChoice(emoji: '✌️', label: '가위', color: Color(0xFFBBDEFB)),
@@ -47,7 +48,7 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
           setState(() {
             joinedUsers =
                 users.map((u) {
-                  return _PlayerInfo(
+                  return PlayerInfo(
                     uid: u['uid'],
                     name: u['name'],
                     photoUrl: u['photoUrl'],
@@ -98,7 +99,7 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
           child: Column(
             children: [
               if (joinedUsers.isNotEmpty)
-                _JoinedUsersProfile(users: joinedUsers),
+                JoinedUsersProfile(users: joinedUsers),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -167,48 +168,4 @@ class _RpsChoice {
     required this.label,
     required this.color,
   });
-}
-
-class _PlayerInfo {
-  final String uid;
-  final String name;
-  final String photoUrl;
-
-  const _PlayerInfo({
-    required this.uid,
-    required this.name,
-    required this.photoUrl,
-  });
-}
-
-class _JoinedUsersProfile extends StatelessWidget {
-  final List<_PlayerInfo> users;
-
-  const _JoinedUsersProfile({required this.users});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text('참여 인원: ${users.length}명'),
-        const SizedBox(height: 8),
-        ...users.map((user) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(user.photoUrl),
-                ),
-                const SizedBox(width: 12),
-                Text(user.name),
-              ],
-            ),
-          );
-        }),
-      ],
-    );
-  }
 }

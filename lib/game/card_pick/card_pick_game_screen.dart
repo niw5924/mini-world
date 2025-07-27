@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mini_world/api/card_pick_api.dart';
 import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/constants/app_colors.dart';
+import 'package:mini_world/game/joined_users_profile.dart';
 import 'package:mini_world/widgets/mini_world_button.dart';
 import 'card_pick_result_controller.dart';
 import 'card_pick_result_dialog.dart';
@@ -19,7 +20,7 @@ class _CardPickGameScreenState extends State<CardPickGameScreen> {
   final CardPickResultController controller = CardPickResultController();
 
   List<_CardItem> cards = [];
-  List<_PlayerInfo> joinedUsers = [];
+  List<PlayerInfo> joinedUsers = [];
   int? selectedIndex;
 
   @override
@@ -48,7 +49,7 @@ class _CardPickGameScreenState extends State<CardPickGameScreen> {
             joinedUsers =
                 users
                     .map(
-                      (u) => _PlayerInfo(
+                      (u) => PlayerInfo(
                         uid: u['uid'],
                         name: u['name'],
                         photoUrl: u['photoUrl'],
@@ -115,7 +116,7 @@ class _CardPickGameScreenState extends State<CardPickGameScreen> {
           child: Column(
             children: [
               if (joinedUsers.isNotEmpty)
-                _JoinedUsersProfile(users: joinedUsers),
+                JoinedUsersProfile(users: joinedUsers),
               const SizedBox(height: 20),
               Expanded(
                 child: Column(
@@ -193,48 +194,4 @@ class _CardItem {
   bool isSelected;
 
   _CardItem({required this.id, required this.isSelected});
-}
-
-class _PlayerInfo {
-  final String uid;
-  final String name;
-  final String photoUrl;
-
-  const _PlayerInfo({
-    required this.uid,
-    required this.name,
-    required this.photoUrl,
-  });
-}
-
-class _JoinedUsersProfile extends StatelessWidget {
-  final List<_PlayerInfo> users;
-
-  const _JoinedUsersProfile({required this.users});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text('참여 인원: ${users.length}명'),
-        const SizedBox(height: 8),
-        ...users.map((user) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(user.photoUrl),
-                ),
-                const SizedBox(width: 12),
-                Text(user.name),
-              ],
-            ),
-          );
-        }),
-      ],
-    );
-  }
 }
