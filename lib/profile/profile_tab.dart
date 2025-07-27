@@ -3,6 +3,7 @@ import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/api/user_api.dart';
 import 'package:mini_world/profile/record/record_screen.dart';
 import 'package:mini_world/constants/app_colors.dart';
+import 'package:mini_world/widgets/mini_world_icon_button.dart';
 
 class ProfileTab extends StatefulWidget {
   const ProfileTab({super.key});
@@ -145,25 +146,19 @@ class _ProfileTabState extends State<ProfileTab> {
           ),
         ),
         const SizedBox(height: 12),
-        ElevatedButton.icon(
+        MiniWorldIconButton(
+          label: '내 기록 보기',
+          icon: Icons.list_alt,
           onPressed: () {
             Navigator.of(
               context,
             ).push(MaterialPageRoute(builder: (_) => const RecordScreen()));
           },
-          icon: const Icon(Icons.list_alt),
-          label: const Text('내 기록 보기'),
-          style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white,
-            backgroundColor: AppColors.secondary,
-            padding: const EdgeInsets.all(12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
         ),
         const SizedBox(height: 12),
-        ElevatedButton.icon(
+        MiniWorldIconButton(
+          label: '로그아웃',
+          icon: Icons.logout,
           onPressed: () async {
             try {
               await AuthService().signOut();
@@ -176,16 +171,6 @@ class _ProfileTabState extends State<ProfileTab> {
               ).showSnackBar(SnackBar(content: Text('로그아웃 실패: $e')));
             }
           },
-          icon: const Icon(Icons.logout),
-          label: const Text('로그아웃'),
-          style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white,
-            backgroundColor: AppColors.primary,
-            padding: const EdgeInsets.all(12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
         ),
       ],
     );
