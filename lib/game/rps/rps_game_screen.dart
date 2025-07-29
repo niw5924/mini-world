@@ -3,10 +3,10 @@ import 'package:mini_world/api/rps_api.dart';
 import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/constants/app_colors.dart';
 import 'package:mini_world/game/game_result_controller.dart';
+import 'package:mini_world/game/game_websocket_service.dart';
 import 'package:mini_world/game/joined_users_profile.dart';
 import 'package:mini_world/widgets/mini_world_button.dart';
 import 'rps_result_dialog.dart';
-import 'rps_websocket_service.dart';
 
 class RpsGameScreen extends StatefulWidget {
   const RpsGameScreen({super.key});
@@ -16,7 +16,7 @@ class RpsGameScreen extends StatefulWidget {
 }
 
 class _RpsGameScreenState extends State<RpsGameScreen> {
-  late RpsWebSocketService socket;
+  late GameWebSocketService<String> socket;
   final GameResultController<String> controller =
       GameResultController<String>();
 
@@ -41,33 +41,36 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
 
     final gameId = await RpsApi.join(firebaseIdToken);
 
-    socket = RpsWebSocketService(gameId: gameId);
-    socket.onMessage = (message) {
-      switch (message['type']) {
-        case 'joinedUsers':
-          final users = message['users'] as List;
-          setState(() {
-            joinedUsers =
-                users.map((u) {
-                  return PlayerInfo(
-                    uid: u['uid'],
-                    name: u['name'],
-                    photoUrl: u['photoUrl'],
-                  );
-                }).toList();
-          });
-          break;
+    socket = GameWebSocketService<String>(
+      gamePath: 'rps',
+      gameId: gameId,
+      onMessage: (message) {
+        switch (message['type']) {
+          case 'joinedUsers':
+            final users = message['users'] as List;
+            setState(() {
+              joinedUsers =
+                  users.map((u) {
+                    return PlayerInfo(
+                      uid: u['uid'],
+                      name: u['name'],
+                      photoUrl: u['photoUrl'],
+                    );
+                  }).toList();
+            });
+            break;
 
-        case 'result':
-          controller.update(
-            myChoice: message['myChoice'],
-            opponentChoice: message['opponentChoice'],
-            outcome: message['outcome'],
-            rankPointDelta: message['rankPointDelta'],
-          );
-          break;
-      }
-    };
+          case 'result':
+            controller.update(
+              myChoice: message['myChoice'],
+              opponentChoice: message['opponentChoice'],
+              outcome: message['outcome'],
+              rankPointDelta: message['rankPointDelta'],
+            );
+            break;
+        }
+      },
+    );
 
     socket.connect();
   }

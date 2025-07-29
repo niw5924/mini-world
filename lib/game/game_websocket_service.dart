@@ -1,17 +1,22 @@
 import 'dart:convert';
-
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/utils/ws_url_helper.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-class CardPickWebSocketService {
+class GameWebSocketService<T> {
+  final String gamePath;
   final String gameId;
-  void Function(Map<String, dynamic>)? onMessage;
+  final void Function(Map<String, dynamic>) onMessage;
 
   late WebSocketChannel _channel;
 
-  CardPickWebSocketService({required this.gameId});
+  GameWebSocketService({
+    required this.gamePath,
+    required this.gameId,
+    required this.onMessage,
+  });
 
   Future<void> connect() async {
     final firebaseUser = AuthService().currentUser!;
@@ -19,7 +24,7 @@ class CardPickWebSocketService {
 
     final baseHttp = dotenv.env['API_URL']!;
     final wsUrl = await resolveWsUrl(baseHttp);
-    final fullUrl = '$wsUrl/card-pick/$gameId';
+    final fullUrl = '$wsUrl/$gamePath/$gameId';
 
     _channel = WebSocketChannel.connect(Uri.parse(fullUrl));
 
@@ -30,14 +35,14 @@ class CardPickWebSocketService {
     _channel.stream.listen(
       (event) {
         final data = jsonDecode(event);
-        onMessage?.call(data);
+        onMessage(data);
       },
-      onError: (error) => print('WebSocket error: $error'),
-      onDone: () => print('WebSocket closed'),
+      onError: (error) => debugPrint('WebSocket error: $error'),
+      onDone: () => debugPrint('WebSocket closed'),
     );
   }
 
-  void sendChoice(int choice) {
+  void sendChoice(T choice) {
     _channel.sink.add(jsonEncode({'type': 'choice', 'data': choice}));
   }
 

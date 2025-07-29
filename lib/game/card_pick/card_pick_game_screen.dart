@@ -3,10 +3,10 @@ import 'package:mini_world/api/card_pick_api.dart';
 import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/constants/app_colors.dart';
 import 'package:mini_world/game/game_result_controller.dart';
+import 'package:mini_world/game/game_websocket_service.dart';
 import 'package:mini_world/game/joined_users_profile.dart';
 import 'package:mini_world/widgets/mini_world_button.dart';
 import 'card_pick_result_dialog.dart';
-import 'card_pick_websocket_service.dart';
 
 class CardPickGameScreen extends StatefulWidget {
   const CardPickGameScreen({super.key});
@@ -16,7 +16,7 @@ class CardPickGameScreen extends StatefulWidget {
 }
 
 class _CardPickGameScreenState extends State<CardPickGameScreen> {
-  late CardPickWebSocketService socket;
+  late GameWebSocketService<int> socket;
   final GameResultController<int> controller = GameResultController<int>();
 
   List<_CardItem> cards = [];
@@ -38,36 +38,41 @@ class _CardPickGameScreenState extends State<CardPickGameScreen> {
   Future<void> initCardPickGame() async {
     final firebaseUser = AuthService().currentUser!;
     final firebaseIdToken = await AuthService().getIdToken(firebaseUser);
+
     final gameId = await CardPickApi.join(firebaseIdToken);
 
-    socket = CardPickWebSocketService(gameId: gameId);
-    socket.onMessage = (message) {
-      switch (message['type']) {
-        case 'joinedUsers':
-          final users = message['users'] as List;
-          setState(() {
-            joinedUsers =
-                users
-                    .map(
-                      (u) => PlayerInfo(
-                        uid: u['uid'],
-                        name: u['name'],
-                        photoUrl: u['photoUrl'],
-                      ),
-                    )
-                    .toList();
-          });
-          break;
-        case 'result':
-          controller.update(
-            myChoice: message['myChoice'],
-            opponentChoice: message['opponentChoice'],
-            outcome: message['outcome'],
-            rankPointDelta: message['rankPointDelta'],
-          );
-          break;
-      }
-    };
+    socket = GameWebSocketService<int>(
+      gamePath: 'card-pick',
+      gameId: gameId,
+      onMessage: (message) {
+        switch (message['type']) {
+          case 'joinedUsers':
+            final users = message['users'] as List;
+            setState(() {
+              joinedUsers =
+                  users
+                      .map(
+                        (u) => PlayerInfo(
+                          uid: u['uid'],
+                          name: u['name'],
+                          photoUrl: u['photoUrl'],
+                        ),
+                      )
+                      .toList();
+            });
+            break;
+
+          case 'result':
+            controller.update(
+              myChoice: message['myChoice'],
+              opponentChoice: message['opponentChoice'],
+              outcome: message['outcome'],
+              rankPointDelta: message['rankPointDelta'],
+            );
+            break;
+        }
+      },
+    );
 
     await socket.connect();
   }
