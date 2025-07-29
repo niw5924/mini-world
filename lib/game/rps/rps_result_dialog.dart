@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mini_world/game/game_result_controller.dart';
 import 'package:mini_world/widgets/mini_world_button.dart';
-import 'rps_result_controller.dart';
 
 Future<void> showRpsResultDialog({
   required BuildContext context,
-  required RpsResultController controller,
+  required GameResultController<String> controller,
 }) {
   return showDialog(
     context: context,
@@ -12,7 +12,7 @@ Future<void> showRpsResultDialog({
     builder: (_) {
       return PopScope(
         canPop: false,
-        child: ValueListenableBuilder<RpsResultState>(
+        child: ValueListenableBuilder<GameResultState<String>>(
           valueListenable: controller,
           builder: (_, state, __) {
             return Dialog(

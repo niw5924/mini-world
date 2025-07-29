@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mini_world/api/card_pick_api.dart';
 import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/constants/app_colors.dart';
+import 'package:mini_world/game/game_result_controller.dart';
 import 'package:mini_world/game/joined_users_profile.dart';
 import 'package:mini_world/widgets/mini_world_button.dart';
-import 'card_pick_result_controller.dart';
 import 'card_pick_result_dialog.dart';
 import 'card_pick_websocket_service.dart';
 
@@ -17,7 +17,7 @@ class CardPickGameScreen extends StatefulWidget {
 
 class _CardPickGameScreenState extends State<CardPickGameScreen> {
   late CardPickWebSocketService socket;
-  final CardPickResultController controller = CardPickResultController();
+  final GameResultController<int> controller = GameResultController<int>();
 
   List<_CardItem> cards = [];
   List<PlayerInfo> joinedUsers = [];

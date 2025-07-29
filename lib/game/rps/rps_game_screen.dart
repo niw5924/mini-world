@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mini_world/api/rps_api.dart';
 import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/constants/app_colors.dart';
+import 'package:mini_world/game/game_result_controller.dart';
 import 'package:mini_world/game/joined_users_profile.dart';
 import 'package:mini_world/widgets/mini_world_button.dart';
 import 'rps_result_dialog.dart';
-import 'rps_result_controller.dart';
 import 'rps_websocket_service.dart';
 
 class RpsGameScreen extends StatefulWidget {
@@ -17,7 +17,8 @@ class RpsGameScreen extends StatefulWidget {
 
 class _RpsGameScreenState extends State<RpsGameScreen> {
   late RpsWebSocketService socket;
-  final RpsResultController controller = RpsResultController();
+  final GameResultController<String> controller =
+      GameResultController<String>();
 
   int? selectedIndex;
   List<PlayerInfo> joinedUsers = [];

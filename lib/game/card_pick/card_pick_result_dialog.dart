@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mini_world/game/game_result_controller.dart';
 import 'package:mini_world/widgets/mini_world_button.dart';
-import 'card_pick_result_controller.dart';
 
 Future<void> showCardPickResultDialog({
   required BuildContext context,
-  required CardPickResultController controller,
+  required GameResultController<int> controller,
 }) {
   return showDialog(
     context: context,
@@ -12,7 +12,7 @@ Future<void> showCardPickResultDialog({
     builder: (_) {
       return PopScope(
         canPop: false,
-        child: ValueListenableBuilder<CardPickResultState>(
+        child: ValueListenableBuilder<GameResultState<int>>(
           valueListenable: controller,
           builder: (_, state, __) {
             return Dialog(

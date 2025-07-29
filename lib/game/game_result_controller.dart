@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 
-class CardPickResultState {
-  final int? myChoice;
-  final int? opponentChoice;
+class GameResultState<T> {
+  final T? myChoice;
+  final T? opponentChoice;
   final String? outcome;
   final int? rankPointDelta;
 
-  const CardPickResultState({
+  const GameResultState({
     this.myChoice,
     this.opponentChoice,
     this.outcome,
     this.rankPointDelta,
   });
 
-  CardPickResultState copyWith({
-    int? myChoice,
-    int? opponentChoice,
+  GameResultState<T> copyWith({
+    T? myChoice,
+    T? opponentChoice,
     String? outcome,
     int? rankPointDelta,
   }) {
-    return CardPickResultState(
+    return GameResultState<T>(
       myChoice: myChoice ?? this.myChoice,
       opponentChoice: opponentChoice ?? this.opponentChoice,
       outcome: outcome ?? this.outcome,
@@ -28,12 +28,12 @@ class CardPickResultState {
   }
 }
 
-class CardPickResultController extends ValueNotifier<CardPickResultState> {
-  CardPickResultController() : super(const CardPickResultState());
+class GameResultController<T> extends ValueNotifier<GameResultState<T>> {
+  GameResultController() : super(GameResultState<T>());
 
   void update({
-    int? myChoice,
-    int? opponentChoice,
+    T? myChoice,
+    T? opponentChoice,
     String? outcome,
     int? rankPointDelta,
   }) {
