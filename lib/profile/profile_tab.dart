@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/api/user_api.dart';
-import 'package:mini_world/profile/record/record_screen.dart';
 import 'package:mini_world/constants/app_colors.dart';
+import 'package:mini_world/profile/game_record/game_record_screen.dart';
 import 'package:mini_world/widgets/mini_world_icon_button.dart';
 
 class ProfileTab extends StatefulWidget {
@@ -147,12 +147,12 @@ class _ProfileTabState extends State<ProfileTab> {
         ),
         const SizedBox(height: 12),
         MiniWorldIconButton(
-          label: '내 기록 보기',
+          label: '게임 기록',
           icon: Icons.list_alt,
           onPressed: () {
             Navigator.of(
               context,
-            ).push(MaterialPageRoute(builder: (_) => const RecordScreen()));
+            ).push(MaterialPageRoute(builder: (_) => const GameRecordScreen()));
           },
         ),
         const SizedBox(height: 12),

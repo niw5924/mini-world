@@ -5,14 +5,14 @@ import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/constants/game_enums.dart';
 import 'package:mini_world/constants/app_colors.dart';
 
-class RecordScreen extends StatefulWidget {
-  const RecordScreen({super.key});
+class GameRecordScreen extends StatefulWidget {
+  const GameRecordScreen({super.key});
 
   @override
-  State<RecordScreen> createState() => _RecordScreenState();
+  State<GameRecordScreen> createState() => _GameRecordScreenState();
 }
 
-class _RecordScreenState extends State<RecordScreen> {
+class _GameRecordScreenState extends State<GameRecordScreen> {
   final ScrollController _scrollController = ScrollController();
 
   List<dynamic> records = [];
@@ -128,7 +128,7 @@ class _RecordScreenState extends State<RecordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('내 게임 기록'),
+        title: const Text('게임 기록'),
         backgroundColor: AppColors.appBarBackground,
       ),
       backgroundColor: AppColors.scaffoldBackground,
