@@ -111,8 +111,10 @@ class _GameRecordScreenState extends State<GameRecordScreen> {
                     gameMode.label,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 4),
-                  Text('결과: ${gameResult.label}'),
+                  Text(
+                    gameResult.label,
+                    style: TextStyle(color: gameResult.color),
+                  ),
                   Text('점수 변화: ${record['rank_point_delta']}'),
                   Text('시간: $formattedTime'),
                 ],
