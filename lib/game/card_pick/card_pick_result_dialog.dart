@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mini_world/constants/game_enums.dart';
 import 'package:mini_world/game/game_result_controller.dart';
 import 'package:mini_world/widgets/mini_world_button.dart';
 
@@ -68,37 +69,51 @@ Future<void> showCardPickResultDialog({
                     if (state.outcome != null) ...[
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 24),
-                        child: Column(
-                          children: [
-                            Text(
-                              state.outcome == 'win'
-                                  ? '🎉 승리했어요!'
-                                  : state.outcome == 'lose'
-                                  ? '😢 패배했어요'
-                                  : '🤝 비겼어요',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            if (state.rankPointDelta != null)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 12),
-                                child: Text(
-                                  '랭크 점수: ${state.rankPointDelta! >= 0 ? '+${state.rankPointDelta}' : '${state.rankPointDelta}'}',
+                        child: Builder(
+                          builder: (_) {
+                            final gameResult = GameResult.fromKey(
+                              state.outcome!,
+                            );
+                            final rankPointDelta = state.rankPointDelta;
+
+                            return Column(
+                              children: [
+                                Text(
+                                  gameResult.label,
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    color:
-                                        state.rankPointDelta! > 0
-                                            ? Colors.green
-                                            : state.rankPointDelta! < 0
-                                            ? Colors.red
-                                            : Colors.grey,
+                                    color: gameResult.color,
                                   ),
                                 ),
-                              ),
-                          ],
+                                if (rankPointDelta != null)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 12),
+                                    child: Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          const TextSpan(text: '랭크 점수: '),
+                                          TextSpan(
+                                            text:
+                                                rankPointDelta >= 0
+                                                    ? '+$rankPointDelta'
+                                                    : '$rankPointDelta',
+                                            style: TextStyle(
+                                              color: gameResult.color,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            );
+                          },
                         ),
                       ),
                       MiniWorldButton(
