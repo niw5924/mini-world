@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mini_world/auth/auth_service.dart';
-import 'package:mini_world/utils/ws_url_helper.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class GameWebSocketService<T> {
@@ -22,9 +21,10 @@ class GameWebSocketService<T> {
     final firebaseUser = AuthService().currentUser!;
     final firebaseIdToken = await AuthService().getIdToken(firebaseUser);
 
-    final baseHttp = dotenv.env['API_URL']!;
-    final wsUrl = await resolveWsUrl(baseHttp);
-    final fullUrl = '$wsUrl/$gamePath/$gameId';
+    final apiUrl = dotenv.env['API_URL']!;
+    final uri = Uri.parse(apiUrl);
+    final wsUri = uri.replace(scheme: 'ws');
+    final fullUrl = '$wsUri/$gamePath/$gameId';
 
     _channel = WebSocketChannel.connect(Uri.parse(fullUrl));
 
