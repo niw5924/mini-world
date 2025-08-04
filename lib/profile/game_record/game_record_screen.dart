@@ -115,7 +115,9 @@ class _GameRecordScreenState extends State<GameRecordScreen> {
                     gameResult.label,
                     style: TextStyle(color: gameResult.color),
                   ),
-                  Text('점수 변화: ${record['rank_point_delta']}'),
+                  Text(
+                    '점수 변화: ${record['rank_point_delta'] >= 0 ? '+' : ''}${record['rank_point_delta']}',
+                  ),
                   Text('시간: $formattedTime'),
                 ],
               ),
