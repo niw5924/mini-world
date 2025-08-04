@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mini_world/api/user_api.dart';
 import 'package:mini_world/auth/auth_service.dart';
+import 'package:mini_world/constants/app_colors.dart';
 
 class RankingTab extends StatefulWidget {
   const RankingTab({super.key});
@@ -82,6 +83,7 @@ class _RankingTabState extends State<RankingTab> {
     final borderColor = _getBorderColor(rank);
 
     return Card(
+      color: AppColors.cardBackground,
       shape: RoundedRectangleBorder(
         side:
             borderColor != null
@@ -89,6 +91,7 @@ class _RankingTabState extends State<RankingTab> {
                 : BorderSide.none,
         borderRadius: BorderRadius.circular(12),
       ),
+      elevation: 2,
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: Row(
