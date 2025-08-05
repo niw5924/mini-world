@@ -61,7 +61,7 @@ class _GreedyGameScreenState extends State<GreedyGameScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 24),
                     TextField(
                       controller: _controller,
                       keyboardType: TextInputType.number,
@@ -103,7 +103,6 @@ class _GreedyGameScreenState extends State<GreedyGameScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
               MiniWorldButton(
                 text: '제출하기',
                 enabled: selectedNumber != null,
