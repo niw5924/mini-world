@@ -61,7 +61,6 @@ class _CardPickGameScreenState extends State<CardPickGameScreen> {
                       .toList();
             });
             break;
-
           case 'result':
             controller.update(
               myChoice: message['myChoice'],
@@ -122,19 +121,19 @@ class _CardPickGameScreenState extends State<CardPickGameScreen> {
             children: [
               if (joinedUsers.isNotEmpty)
                 JoinedUsersProfile(users: joinedUsers),
-              const SizedBox(height: 20),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
                       '카드를 하나 뽑아보세요!',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 24),
                     GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -160,7 +159,6 @@ class _CardPickGameScreenState extends State<CardPickGameScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
               MiniWorldButton(
                 text: '제출하기',
                 enabled: selectedIndex != null,
@@ -174,21 +172,17 @@ class _CardPickGameScreenState extends State<CardPickGameScreen> {
   }
 
   Widget _buildCardFace({required String text, required bool isSelected}) {
-    return Card(
-      shape: RoundedRectangleBorder(
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.secondary,
         borderRadius: BorderRadius.circular(16),
-        side:
-            isSelected
-                ? BorderSide(color: AppColors.primary, width: 3.0)
-                : BorderSide.none,
+        border:
+            isSelected ? Border.all(color: AppColors.primary, width: 3) : null,
       ),
-      clipBehavior: Clip.antiAlias,
-      color: AppColors.secondary,
-      child: Center(
-        child: Text(
-          text,
-          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        ),
+      alignment: Alignment.center,
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
       ),
     );
   }
