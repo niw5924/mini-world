@@ -107,46 +107,53 @@ class _RpsGameScreenState extends State<RpsGameScreen> {
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(choices.length, (index) {
-                    final choice = choices[index];
-                    final isSelected = selectedIndex == index;
+                  children: [
+                    const Text(
+                      '가위, 바위, 보! 뭐 낼까?',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    ...List.generate(choices.length, (index) {
+                      final choice = choices[index];
+                      final isSelected = selectedIndex == index;
 
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          side:
-                              isSelected
-                                  ? BorderSide(
-                                    color: AppColors.primary,
-                                    width: 3.0,
-                                  )
-                                  : BorderSide.none,
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        color: choice.color,
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.all(20),
-                          title: Center(
-                            child: Text(
-                              '${choice.emoji} ${choice.label}',
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedIndex = isSelected ? null : index;
+                          });
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 24),
+                          margin: const EdgeInsets.only(bottom: 16),
+                          decoration: BoxDecoration(
+                            color: choice.color,
+                            borderRadius: BorderRadius.circular(16),
+                            border:
+                                isSelected
+                                    ? Border.all(
+                                      color: AppColors.primary,
+                                      width: 3,
+                                    )
+                                    : null,
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            '${choice.emoji} ${choice.label}',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          onTap: () {
-                            setState(() {
-                              selectedIndex =
-                                  selectedIndex == index ? null : index;
-                            });
-                          },
                         ),
-                      ),
-                    );
-                  }),
+                      );
+                    }),
+                  ],
                 ),
               ),
               MiniWorldButton(
