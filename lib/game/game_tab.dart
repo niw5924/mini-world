@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mini_world/game/card_pick/card_pick_game_screen.dart';
+import 'package:mini_world/game/greedy/greedy_game_screen.dart';
 import 'package:mini_world/game/rps/rps_game_screen.dart';
 import 'package:mini_world/constants/app_colors.dart';
 
@@ -39,13 +40,20 @@ class GameTab extends StatelessWidget {
             );
           },
         ),
-        // const SizedBox(height: 16),
-        // const _GameCard(
-        //   icon: Icons.grid_3x3,
-        //   title: 'Tic-Tac-Toe',
-        //   subtitle: 'Play classic Tic-Tac-Toe',
-        //   iconBackgroundColor: Color(0xFFD0E8FF),
-        // ),
+        const SizedBox(height: 16),
+        _GameCard(
+          icon: Icons.attach_money,
+          title: 'Greedy Game',
+          subtitle: 'Pick 1~100, stay under 100!',
+          iconBackgroundColor: Color(0xFFE8D4FF),
+          onTap: () {
+            HapticFeedback.mediumImpact();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const GreedyGameScreen()),
+            );
+          },
+        ),
         // const SizedBox(height: 16),
         // const _GameCard(
         //   icon: Icons.quiz,
