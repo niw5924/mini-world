@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 enum GameMode {
   rps('rps', '가위바위보'),
-  cardPick('card_pick', '카드 뽑기');
+  cardPick('card_pick', '카드 뽑기'),
+  greedy('greedy', '욕심 게임');
 
   final String key;
   final String label;
