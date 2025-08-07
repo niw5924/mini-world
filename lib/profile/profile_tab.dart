@@ -3,6 +3,7 @@ import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/api/user_api.dart';
 import 'package:mini_world/constants/app_colors.dart';
 import 'package:mini_world/profile/game_record/game_record_screen.dart';
+import 'package:mini_world/widgets/mini_world_confirm_dialog.dart';
 import 'package:mini_world/widgets/mini_world_icon_button.dart';
 
 class ProfileTab extends StatefulWidget {
@@ -160,15 +161,28 @@ class _ProfileTabState extends State<ProfileTab> {
           label: '로그아웃',
           icon: Icons.logout,
           onPressed: () async {
-            try {
-              await AuthService().signOut();
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(const SnackBar(content: Text('로그아웃 되었습니다')));
-            } catch (e) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text('로그아웃 실패: $e')));
+            final shouldLogout = await showDialog<bool>(
+              context: context,
+              builder:
+                  (_) => const MiniWorldConfirmDialog(
+                    title: '로그아웃',
+                    content: '정말 로그아웃하시겠어요?',
+                    confirmText: '로그아웃',
+                    cancelText: '취소',
+                  ),
+            );
+
+            if (shouldLogout == true) {
+              try {
+                await AuthService().signOut();
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text('로그아웃 되었습니다')));
+              } catch (e) {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text('로그아웃 실패: $e')));
+              }
             }
           },
         ),
