@@ -87,7 +87,7 @@ class _RankingTabState extends State<RankingTab> {
       shape: RoundedRectangleBorder(
         side:
             borderColor != null
-                ? BorderSide(color: borderColor, width: 5.0)
+                ? BorderSide(color: borderColor, width: 5)
                 : BorderSide.none,
         borderRadius: BorderRadius.circular(12),
       ),
