@@ -56,6 +56,23 @@ class UserApi {
     return data['user'];
   }
 
+  static Future<void> delete(String firebaseIdToken) async {
+    final apiUrl = dotenv.env['API_URL']!;
+    final response = await http.delete(
+      Uri.parse('$apiUrl/api/user/delete'),
+      headers: {
+        'Authorization': 'Bearer $firebaseIdToken',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    final data = jsonDecode(response.body);
+
+    if (data['success'] != true) {
+      throw Exception(data['message']);
+    }
+  }
+
   static Future<List<Map<String, dynamic>>> ranking() async {
     final apiUrl = dotenv.env['API_URL']!;
     final response = await http.get(
