@@ -53,6 +53,7 @@ class _GameRecordScreenState extends State<GameRecordScreen> {
     try {
       final firebaseUser = AuthService().currentUser!;
       final firebaseIdToken = await AuthService().getIdToken(firebaseUser);
+
       final result = await RecordApi.me(
         firebaseIdToken: firebaseIdToken,
         limit: limit,

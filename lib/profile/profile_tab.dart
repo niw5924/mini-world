@@ -28,6 +28,7 @@ class _ProfileTabState extends State<ProfileTab> {
     try {
       final firebaseUser = AuthService().currentUser!;
       final firebaseIdToken = await AuthService().getIdToken(firebaseUser);
+
       final stats = await UserApi.me(firebaseIdToken);
       setState(() {
         userStats = stats;
@@ -182,6 +183,36 @@ class _ProfileTabState extends State<ProfileTab> {
                 ScaffoldMessenger.of(
                   context,
                 ).showSnackBar(SnackBar(content: Text('로그아웃 실패: $e')));
+              }
+            }
+          },
+        ),
+        const SizedBox(height: 12),
+        MiniWorldIconButton(
+          label: '회원탈퇴',
+          icon: Icons.delete_forever,
+          onPressed: () async {
+            final shouldDelete = await showDialog<bool>(
+              context: context,
+              builder:
+                  (_) => const MiniWorldConfirmDialog(
+                    title: '회원탈퇴',
+                    content: '정말 탈퇴하시겠어요?\n모든 데이터가 삭제됩니다.',
+                    confirmText: '탈퇴',
+                    cancelText: '취소',
+                  ),
+            );
+
+            if (shouldDelete == true) {
+              try {
+                await AuthService().deleteAccount();
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text('회원탈퇴가 완료되었습니다')));
+              } catch (e) {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text('회원탈퇴 실패: $e')));
               }
             }
           },

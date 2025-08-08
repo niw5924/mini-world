@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mini_world/api/user_api.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -33,6 +34,19 @@ class AuthService {
   Future<void> signOut() async {
     final googleSignIn = GoogleSignIn.instance;
     await googleSignIn.signOut();
+    await _auth.signOut();
+  }
+
+  Future<void> deleteAccount() async {
+    final firebaseUser = AuthService().currentUser!;
+    final firebaseIdToken = await AuthService().getIdToken(firebaseUser);
+
+    await UserApi.delete(firebaseIdToken);
+
+    final googleSignIn = GoogleSignIn.instance;
+    await googleSignIn.disconnect();
+    await googleSignIn.signOut();
+    await firebaseUser.delete();
     await _auth.signOut();
   }
 }

@@ -33,6 +33,7 @@ class _GreedyGameScreenState extends State<GreedyGameScreen> {
   Future<void> initGreedyGame() async {
     final firebaseUser = AuthService().currentUser!;
     final firebaseIdToken = await AuthService().getIdToken(firebaseUser);
+
     final gameId = await GreedyApi.join(firebaseIdToken);
 
     socket = GameWebSocketService<int>(
