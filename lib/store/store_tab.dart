@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mini_world/constants/app_colors.dart';
+import 'package:mini_world/widgets/mini_world_button.dart';
 
 class StoreTab extends StatelessWidget {
   const StoreTab({super.key});
@@ -63,9 +64,13 @@ class _StoreList extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 8,
+            ),
             title: Text(title),
             subtitle: Text(subtitle),
-            trailing: ElevatedButton(onPressed: () {}, child: const Text('구매')),
+            trailing: MiniWorldButton(width: 100, text: '구매', onPressed: () {}),
           ),
         );
       },

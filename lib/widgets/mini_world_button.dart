@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:mini_world/constants/app_colors.dart';
 
 class MiniWorldButton extends StatelessWidget {
+  final double width;
   final String text;
   final VoidCallback onPressed;
   final bool enabled;
 
   const MiniWorldButton({
     super.key,
+    this.width = double.infinity,
     required this.text,
     required this.onPressed,
     this.enabled = true,
@@ -16,7 +18,7 @@ class MiniWorldButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: double.infinity,
+      width: width,
       height: 52,
       child: ElevatedButton(
         onPressed: enabled ? onPressed : null,
