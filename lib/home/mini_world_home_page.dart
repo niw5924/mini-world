@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mini_world/constants/app_colors.dart';
 import 'package:mini_world/widgets/mini_world_confirm_dialog.dart';
+
 import '../game/game_tab.dart';
-import '../ranking/ranking_tab.dart';
 import '../profile/profile_tab.dart';
+import '../ranking/ranking_tab.dart';
+import '../store/store_tab.dart';
 
 class MiniWorldHomePage extends StatefulWidget {
   const MiniWorldHomePage({super.key});
@@ -19,6 +21,7 @@ class _MiniWorldHomePageState extends State<MiniWorldHomePage> {
   final List<Widget> _tabs = [
     const GameTab(),
     const RankingTab(),
+    const StoreTab(),
     const ProfileTab(),
   ];
 
@@ -52,6 +55,7 @@ class _MiniWorldHomePageState extends State<MiniWorldHomePage> {
         backgroundColor: AppColors.scaffoldBackground,
         body: SafeArea(child: _tabs[_selectedIndex]),
         bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
           currentIndex: _selectedIndex,
           backgroundColor: AppColors.bottomNavBackground,
           selectedItemColor: AppColors.primary,
@@ -67,6 +71,7 @@ class _MiniWorldHomePageState extends State<MiniWorldHomePage> {
               label: '게임',
             ),
             BottomNavigationBarItem(icon: Icon(Icons.leaderboard), label: '랭킹'),
+            BottomNavigationBarItem(icon: Icon(Icons.store), label: '스토어'),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: '프로필'),
           ],
         ),
