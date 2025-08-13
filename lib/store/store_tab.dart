@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mini_world/constants/app_colors.dart';
 import 'package:mini_world/widgets/mini_world_button.dart';
+import 'package:mini_world/widgets/rainbow_border.dart';
 
 class StoreTab extends StatelessWidget {
   const StoreTab({super.key});
@@ -57,12 +58,7 @@ class _StoreList extends StatelessWidget {
       separatorBuilder: (_, __) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
         final (title, subtitle) = items[index];
-        return Card(
-          elevation: 2,
-          color: AppColors.cardBackground,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+        return RainbowBorder(
           child: ListTile(
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
