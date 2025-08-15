@@ -99,7 +99,7 @@ class _GameCard extends StatelessWidget {
       elevation: 2,
       clipBehavior: Clip.antiAlias,
       child: ListTile(
-        contentPadding: const EdgeInsets.all(16),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(

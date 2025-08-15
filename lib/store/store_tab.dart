@@ -1,10 +1,52 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:mini_world/constants/app_colors.dart';
 import 'package:mini_world/widgets/mini_world_button.dart';
 import 'package:mini_world/widgets/rainbow_border.dart';
 
-class StoreTab extends StatelessWidget {
+class StoreTab extends StatefulWidget {
   const StoreTab({super.key});
+
+  @override
+  State<StoreTab> createState() => _StoreTabState();
+}
+
+class _StoreTabState extends State<StoreTab> {
+  final Set<String> _orderedIds = {'lose_protection_3', 'win_bonus_3'};
+  late Future<ProductDetailsResponse> _productFuture;
+  StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
+
+  @override
+  void initState() {
+    super.initState();
+    _productFuture = InAppPurchase.instance.queryProductDetails(_orderedIds);
+    _purchaseSub = InAppPurchase.instance.purchaseStream.listen((
+      purchases,
+    ) async {
+      for (final p in purchases) {
+        if ((p.status == PurchaseStatus.purchased ||
+                p.status == PurchaseStatus.restored) &&
+            p.pendingCompletePurchase) {
+          await InAppPurchase.instance.completePurchase(p);
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _purchaseSub?.cancel();
+    super.dispose();
+  }
+
+  void _buy(ProductDetails pd) {
+    final param = PurchaseParam(productDetails: pd);
+    InAppPurchase.instance.buyConsumable(
+      purchaseParam: param,
+      autoConsume: true,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,57 +59,61 @@ class StoreTab extends StatelessWidget {
             indicatorColor: AppColors.accent,
             labelColor: AppColors.accent,
             unselectedLabelColor: Colors.black,
-            tabs: [Tab(text: '아이템'), Tab(text: '스킨')],
+            tabs: [Tab(text: '상품'), Tab(text: '구매내역')],
           ),
           Expanded(
             child: TabBarView(
-              children: [
-                _StoreList(
-                  items: const [
-                    ('부스터 x2', '게임 점수 2배 (30분)'),
-                    ('닉네임 변경권', '닉네임 1회 변경'),
-                    ('프로필 테마', '테마 1개 영구 소장'),
-                  ],
-                ),
-                _StoreList(
-                  items: const [
-                    ('기본 아바타 스킨', '심플한 기본 스타일'),
-                    ('네온 스킨', '형광 네온 컬러 세트'),
-                    ('레트로 스킨', '8비트 감성 팩'),
-                  ],
-                ),
-              ],
+              children: [_buildProductTab(), const SizedBox.shrink()],
             ),
           ),
         ],
       ),
     );
   }
-}
 
-class _StoreList extends StatelessWidget {
-  final List<(String, String)> items;
-
-  const _StoreList({required this.items});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      padding: const EdgeInsets.all(12),
-      itemCount: items.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 8),
-      itemBuilder: (context, index) {
-        final (title, subtitle) = items[index];
-        return RainbowBorder(
-          child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ),
-            title: Text(title),
-            subtitle: Text(subtitle),
-            trailing: MiniWorldButton(width: 100, text: '구매', onPressed: () {}),
-          ),
+  Widget _buildProductTab() {
+    return FutureBuilder<ProductDetailsResponse>(
+      future: _productFuture,
+      builder: (context, snap) {
+        if (snap.connectionState != ConnectionState.done) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snap.hasError) {
+          return Center(child: Text('상품 불러오기 실패\n${snap.error}'));
+        }
+        final products = snap.data!.productDetails;
+        if (products.isEmpty) {
+          return const Center(child: Text('표시할 상품이 없습니다.'));
+        }
+        final ordered =
+            _orderedIds
+                .map((id) => products.where((p) => p.id == id))
+                .expand((e) => e)
+                .toList();
+        return ListView.separated(
+          padding: const EdgeInsets.all(24),
+          itemCount: ordered.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 12),
+          itemBuilder: (context, index) {
+            final pd = ordered[index];
+            final displayTitle =
+                pd.title.replaceAll(' (Mini World: 1v1 Battle)', '').trim();
+            return RainbowBorder(
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                title: Text(displayTitle),
+                subtitle: Text(pd.description),
+                trailing: MiniWorldButton(
+                  width: 100,
+                  text: pd.price,
+                  onPressed: () => _buy(pd),
+                ),
+              ),
+            );
+          },
         );
       },
     );
