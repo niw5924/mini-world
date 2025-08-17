@@ -39,6 +39,7 @@ class LoginPage extends StatelessWidget {
                     );
                     await UserApi.initInfo(firebaseIdToken);
                     await UserApi.initStats(firebaseIdToken);
+                    await UserApi.initItems(firebaseIdToken);
                   } catch (e) {
                     ScaffoldMessenger.of(
                       context,

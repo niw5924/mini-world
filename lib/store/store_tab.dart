@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:mini_world/api/purchase_api.dart';
+import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/constants/app_colors.dart';
 import 'package:mini_world/widgets/mini_world_button.dart';
 import 'package:mini_world/widgets/rainbow_border.dart';
@@ -28,7 +30,23 @@ class _StoreTabState extends State<StoreTab> {
         if ((p.status == PurchaseStatus.purchased ||
                 p.status == PurchaseStatus.restored) &&
             p.pendingCompletePurchase) {
-          await InAppPurchase.instance.completePurchase(p);
+          try {
+            final firebaseUser = AuthService().currentUser!;
+            final firebaseIdToken = await AuthService().getIdToken(
+              firebaseUser,
+            );
+
+            await PurchaseApi.purchase(
+              firebaseIdToken: firebaseIdToken,
+              productId: p.productID,
+            );
+
+            await InAppPurchase.instance.completePurchase(p);
+          } catch (e) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text('문제가 발생했습니다 ($e)')));
+          }
         }
       }
     });
