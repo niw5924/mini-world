@@ -105,4 +105,25 @@ class UserApi {
 
     return List<Map<String, dynamic>>.from(data['ranking']);
   }
+
+  static Future<List<Map<String, dynamic>>> purchaseHistory(
+    String firebaseIdToken,
+  ) async {
+    final apiUrl = dotenv.env['API_URL']!;
+    final response = await http.get(
+      Uri.parse('$apiUrl/api/purchase/history'),
+      headers: {
+        'Authorization': 'Bearer $firebaseIdToken',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    final data = jsonDecode(response.body);
+
+    if (data['success'] != true) {
+      throw Exception(data['message']);
+    }
+
+    return List<Map<String, dynamic>>.from(data['purchase_history']);
+  }
 }
