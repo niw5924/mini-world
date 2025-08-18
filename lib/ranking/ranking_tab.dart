@@ -26,6 +26,7 @@ class _RankingTabState extends State<RankingTab> {
     try {
       final data = await UserApi.ranking();
       final firebaseUser = AuthService().currentUser!;
+
       final myData = data.firstWhere((user) => user['uid'] == firebaseUser.uid);
       setState(() {
         ranking = data;

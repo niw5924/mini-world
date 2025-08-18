@@ -34,6 +34,7 @@ class _StoreProductsTabState extends State<StoreProductsTab> {
             final firebaseIdToken = await AuthService().getIdToken(
               firebaseUser,
             );
+
             await PurchaseApi.purchase(
               firebaseIdToken: firebaseIdToken,
               productId: p.productID,

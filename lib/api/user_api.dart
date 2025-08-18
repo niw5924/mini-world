@@ -111,7 +111,7 @@ class UserApi {
   ) async {
     final apiUrl = dotenv.env['API_URL']!;
     final response = await http.get(
-      Uri.parse('$apiUrl/api/purchase/history'),
+      Uri.parse('$apiUrl/api/user/purchase-history'),
       headers: {
         'Authorization': 'Bearer $firebaseIdToken',
         'Content-Type': 'application/json',

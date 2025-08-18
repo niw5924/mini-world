@@ -90,7 +90,7 @@ class _GameRecordScreenState extends State<GameRecordScreen> {
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: Row(
           children: [
             Column(

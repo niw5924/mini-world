@@ -37,6 +37,7 @@ class LoginPage extends StatelessWidget {
                     final firebaseIdToken = await AuthService().getIdToken(
                       firebaseUser,
                     );
+
                     await UserApi.initInfo(firebaseIdToken);
                     await UserApi.initStats(firebaseIdToken);
                     await UserApi.initItems(firebaseIdToken);
