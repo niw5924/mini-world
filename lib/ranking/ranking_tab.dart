@@ -11,10 +11,11 @@ class RankingTab extends StatefulWidget {
 }
 
 class _RankingTabState extends State<RankingTab> {
+  String? error;
+  bool isLoading = true;
+
   List<Map<String, dynamic>>? ranking;
   Map<String, dynamic>? myRanking;
-  bool isLoading = true;
-  String? error;
 
   @override
   void initState() {
@@ -23,15 +24,20 @@ class _RankingTabState extends State<RankingTab> {
   }
 
   Future<void> loadRanking() async {
+    setState(() {
+      error = null;
+      isLoading = true;
+    });
+
     try {
       final data = await UserApi.ranking();
       final firebaseUser = AuthService().currentUser!;
-
       final myData = data.firstWhere((user) => user['uid'] == firebaseUser.uid);
+
       setState(() {
+        isLoading = false;
         ranking = data;
         myRanking = myData;
-        isLoading = false;
       });
     } catch (e) {
       setState(() {
@@ -86,16 +92,16 @@ class _RankingTabState extends State<RankingTab> {
     return Card(
       color: AppColors.cardBackground,
       shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
         side:
             borderColor != null
                 ? BorderSide(color: borderColor, width: 5)
                 : BorderSide.none,
-        borderRadius: BorderRadius.circular(12),
       ),
       elevation: 2,
-      margin: const EdgeInsets.only(bottom: 12),
+      clipBehavior: Clip.antiAlias,
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         leading: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -112,12 +118,12 @@ class _RankingTabState extends State<RankingTab> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
     if (error != null) {
       return Center(child: Text('에러: $error'));
+    }
+
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
     }
 
     return Padding(
@@ -130,20 +136,23 @@ class _RankingTabState extends State<RankingTab> {
               itemBuilder: (context, index) {
                 final user = ranking![index];
 
-                return _buildUserCard(user);
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _buildUserCard(user),
+                );
               },
             ),
           ),
-          const SizedBox(height: 16),
           if (myRanking != null)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const SizedBox(height: 12),
                 const Text(
                   '내 랭킹',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 _buildUserCard(myRanking!),
               ],
             ),
