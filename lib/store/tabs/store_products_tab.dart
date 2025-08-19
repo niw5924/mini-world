@@ -86,12 +86,13 @@ class _StoreProductsTabState extends State<StoreProductsTab> {
                 .toList();
         return ListView.separated(
           padding: const EdgeInsets.all(24),
-          itemCount: ordered.length,
           separatorBuilder: (_, __) => const SizedBox(height: 12),
+          itemCount: ordered.length,
           itemBuilder: (context, index) {
             final pd = ordered[index];
             final displayTitle =
                 pd.title.replaceAll(' (Mini World: 1v1 Battle)', '').trim();
+
             return RainbowBorder(
               child: ListTile(
                 contentPadding: const EdgeInsets.symmetric(

@@ -131,15 +131,13 @@ class _RankingTabState extends State<RankingTab> {
       child: Column(
         children: [
           Expanded(
-            child: ListView.builder(
+            child: ListView.separated(
+              separatorBuilder: (_, __) => const SizedBox(height: 12),
               itemCount: ranking!.length,
               itemBuilder: (context, index) {
                 final user = ranking![index];
 
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _buildUserCard(user),
-                );
+                return _buildUserCard(user);
               },
             ),
           ),
