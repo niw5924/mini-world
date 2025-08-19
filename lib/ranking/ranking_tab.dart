@@ -93,6 +93,7 @@ class _RankingTabState extends State<RankingTab> {
         borderRadius: BorderRadius.circular(12),
       ),
       elevation: 2,
+      margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: Row(
@@ -128,10 +129,8 @@ class _RankingTabState extends State<RankingTab> {
               itemCount: ranking!.length,
               itemBuilder: (context, index) {
                 final user = ranking![index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: _buildUserCard(user),
-                );
+
+                return _buildUserCard(user);
               },
             ),
           ),
