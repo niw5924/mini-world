@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mini_world/constants/app_colors.dart';
 
 class PlayerInfo {
   final String uid;
@@ -31,6 +32,7 @@ class JoinedUsersProfile extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 20,
+                  backgroundColor: AppColors.primary,
                   backgroundImage: NetworkImage(user.photoUrl),
                 ),
                 const SizedBox(width: 12),

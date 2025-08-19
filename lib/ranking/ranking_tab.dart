@@ -108,7 +108,10 @@ class _RankingTabState extends State<RankingTab> {
           children: [
             _buildRankIcon(rank),
             const SizedBox(width: 8),
-            CircleAvatar(backgroundImage: NetworkImage(user['photo_url'])),
+            CircleAvatar(
+              backgroundColor: AppColors.primary,
+              backgroundImage: NetworkImage(user['photo_url']),
+            ),
           ],
         ),
         title: Text(user['name']),

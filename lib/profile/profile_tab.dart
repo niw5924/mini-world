@@ -80,18 +80,7 @@ class _ProfileTabState extends State<ProfileTab> {
                 CircleAvatar(
                   radius: 40,
                   backgroundColor: AppColors.primary,
-                  backgroundImage:
-                      firebaseUser.photoURL != null
-                          ? NetworkImage(firebaseUser.photoURL!)
-                          : null,
-                  child:
-                      firebaseUser.photoURL == null
-                          ? const Icon(
-                            Icons.person,
-                            size: 40,
-                            color: Colors.white,
-                          )
-                          : null,
+                  backgroundImage: NetworkImage(firebaseUser.photoURL!),
                 ),
                 const SizedBox(height: 8),
                 Text(

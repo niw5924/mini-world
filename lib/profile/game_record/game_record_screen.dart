@@ -96,8 +96,9 @@ class _GameRecordScreenState extends State<GameRecordScreen> {
             Column(
               children: [
                 CircleAvatar(
-                  backgroundImage: NetworkImage(record['opponent_photo_url']),
                   radius: 24,
+                  backgroundColor: AppColors.primary,
+                  backgroundImage: NetworkImage(record['opponent_photo_url']),
                 ),
                 const SizedBox(height: 4),
                 Text('VS ${record['opponent_name']}'),
