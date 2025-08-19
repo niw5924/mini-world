@@ -15,12 +15,13 @@ class GameRecordScreen extends StatefulWidget {
 class _GameRecordScreenState extends State<GameRecordScreen> {
   final ScrollController _scrollController = ScrollController();
 
-  List<dynamic> records = [];
+  String? error;
   bool isLoading = false;
-  bool hasMore = true;
+
   int limit = 10;
   int offset = 0;
-  String? error;
+  List<dynamic> records = [];
+  bool hasMore = true;
 
   @override
   void initState() {
@@ -36,8 +37,7 @@ class _GameRecordScreenState extends State<GameRecordScreen> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
+    if (_scrollController.position.extentAfter < 200) {
       if (!isLoading && hasMore) {
         _loadRecords();
       }
@@ -46,8 +46,8 @@ class _GameRecordScreenState extends State<GameRecordScreen> {
 
   Future<void> _loadRecords() async {
     setState(() {
-      isLoading = true;
       error = null;
+      isLoading = true;
     });
 
     try {
@@ -61,10 +61,10 @@ class _GameRecordScreenState extends State<GameRecordScreen> {
       );
 
       setState(() {
-        records.addAll(result['records']);
-        offset += limit;
-        hasMore = result['hasMore'];
         isLoading = false;
+        offset += limit;
+        records.addAll(result['records']);
+        hasMore = result['hasMore'];
       });
     } catch (e) {
       setState(() {
@@ -88,7 +88,7 @@ class _GameRecordScreenState extends State<GameRecordScreen> {
         side: BorderSide(color: Colors.grey.shade300),
       ),
       elevation: 2,
-      margin: const EdgeInsets.only(bottom: 12),
+      clipBehavior: Clip.antiAlias,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: Row(
@@ -152,16 +152,14 @@ class _GameRecordScreenState extends State<GameRecordScreen> {
             return const Center(child: Text('게임 기록이 없습니다.'));
           }
 
-          return ListView.builder(
+          return ListView.separated(
             controller: _scrollController,
             padding: const EdgeInsets.all(24),
+            separatorBuilder: (_, __) => const SizedBox(height: 12),
             itemCount: records.length + (hasMore ? 1 : 0),
             itemBuilder: (context, index) {
               if (index >= records.length) {
-                return const Padding(
-                  padding: EdgeInsets.only(top: 12),
-                  child: Center(child: CircularProgressIndicator()),
-                );
+                return Center(child: CircularProgressIndicator());
               }
 
               return _buildRecordCard(records[index]);
