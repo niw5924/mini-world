@@ -14,9 +14,10 @@ class ProfileTab extends StatefulWidget {
 }
 
 class _ProfileTabState extends State<ProfileTab> {
-  Map<String, dynamic>? userStats;
-  bool isLoading = true;
   String? error;
+  bool isLoading = true;
+
+  Map<String, dynamic>? myStats;
 
   @override
   void initState() {
@@ -25,14 +26,20 @@ class _ProfileTabState extends State<ProfileTab> {
   }
 
   Future<void> loadUserStats() async {
+    setState(() {
+      error = null;
+      isLoading = true;
+    });
+
     try {
       final firebaseUser = AuthService().currentUser!;
       final firebaseIdToken = await AuthService().getIdToken(firebaseUser);
 
-      final stats = await UserApi.me(firebaseIdToken);
+      final myData = await UserApi.me(firebaseIdToken);
+
       setState(() {
-        userStats = stats;
         isLoading = false;
+        myStats = myData;
       });
     } catch (e) {
       setState(() {
@@ -44,15 +51,15 @@ class _ProfileTabState extends State<ProfileTab> {
 
   @override
   Widget build(BuildContext context) {
-    final firebaseUser = AuthService().currentUser!;
+    if (error != null) {
+      return Center(child: Text('오류 발생: $error'));
+    }
 
     if (isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (error != null) {
-      return Center(child: Text('오류 발생: $error'));
-    }
+    final firebaseUser = AuthService().currentUser!;
 
     return ListView(
       padding: const EdgeInsets.all(24),
@@ -64,6 +71,7 @@ class _ProfileTabState extends State<ProfileTab> {
             side: BorderSide(color: Colors.grey.shade300),
           ),
           elevation: 2,
+          clipBehavior: Clip.antiAlias,
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
@@ -71,11 +79,11 @@ class _ProfileTabState extends State<ProfileTab> {
               children: [
                 CircleAvatar(
                   radius: 40,
+                  backgroundColor: AppColors.primary,
                   backgroundImage:
                       firebaseUser.photoURL != null
                           ? NetworkImage(firebaseUser.photoURL!)
                           : null,
-                  backgroundColor: AppColors.primary,
                   child:
                       firebaseUser.photoURL == null
                           ? const Icon(
@@ -103,12 +111,12 @@ class _ProfileTabState extends State<ProfileTab> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      '승리: ${userStats!['win_count']}회',
+                      '승리: ${myStats!['win_count']}회',
                       style: const TextStyle(fontSize: 16),
                     ),
                     const SizedBox(width: 24),
                     Text(
-                      '패배: ${userStats!['lose_count']}회',
+                      '패배: ${myStats!['lose_count']}회',
                       style: const TextStyle(fontSize: 16),
                     ),
                   ],
@@ -123,7 +131,7 @@ class _ProfileTabState extends State<ProfileTab> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      '랭크 점수: ${userStats!['rank_point']}',
+                      '랭크 점수: ${myStats!['rank_point']}',
                       style: const TextStyle(fontSize: 16),
                     ),
                   ],
@@ -138,7 +146,7 @@ class _ProfileTabState extends State<ProfileTab> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      '연승: ${userStats!['win_streak']}회',
+                      '연승: ${myStats!['win_streak']}회',
                       style: const TextStyle(fontSize: 16),
                     ),
                   ],
