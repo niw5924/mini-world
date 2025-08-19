@@ -83,7 +83,7 @@ class _CardPickGameScreenState extends State<CardPickGameScreen> {
     socket.sendChoice(selectedCard.id);
   }
 
-  void _toggleCard(int index) {
+  void _selectCard(int index) {
     setState(() {
       if (selectedIndex == index) {
         selectedIndex = null;
@@ -147,8 +147,9 @@ class _CardPickGameScreenState extends State<CardPickGameScreen> {
                           ),
                       itemBuilder: (context, index) {
                         final card = cards[index];
+
                         return GestureDetector(
-                          onTap: () => _toggleCard(index),
+                          onTap: () => _selectCard(index),
                           child: _buildCardFace(
                             text: '?',
                             isSelected: card.isSelected,
