@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mini_world/constants/game_enums.dart';
+import 'package:mini_world/game/game_result_card.dart';
 import 'package:mini_world/game/game_result_controller.dart';
 import 'package:mini_world/widgets/mini_world_button.dart';
 
@@ -37,7 +38,8 @@ Future<void> showGreedyResultDialog({
                       ),
                     ),
                     const SizedBox(height: 24),
-                    _ResultCard(
+                    GameResultCard(
+                      color: const Color(0xFFBBDEFB),
                       title: '내가 낸 숫자',
                       valueWidget:
                           state.myChoice != null
@@ -49,10 +51,10 @@ Future<void> showGreedyResultDialog({
                                 ),
                               )
                               : const CircularProgressIndicator(strokeWidth: 3),
-                      color: const Color(0xFFBBDEFB),
                     ),
                     const SizedBox(height: 16),
-                    _ResultCard(
+                    GameResultCard(
+                      color: const Color(0xFFF0F0F0),
                       title: '상대가 낸 숫자',
                       valueWidget:
                           state.opponentChoice != null
@@ -64,7 +66,6 @@ Future<void> showGreedyResultDialog({
                                 ),
                               )
                               : const CircularProgressIndicator(strokeWidth: 3),
-                      color: const Color(0xFFF0F0F0),
                     ),
                     if (state.outcome != null) ...[
                       Padding(
@@ -133,36 +134,4 @@ Future<void> showGreedyResultDialog({
       );
     },
   );
-}
-
-class _ResultCard extends StatelessWidget {
-  final String title;
-  final Widget valueWidget;
-  final Color color;
-
-  const _ResultCard({
-    required this.title,
-    required this.valueWidget,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: color,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-        child: Row(
-          children: [
-            Text(
-              '$title: ',
-              style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-            ),
-            Expanded(child: valueWidget),
-          ],
-        ),
-      ),
-    );
-  }
 }
