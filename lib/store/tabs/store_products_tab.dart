@@ -96,8 +96,8 @@ class _StoreProductsTabState extends State<StoreProductsTab> {
             return RainbowBorder(
               child: ListTile(
                 contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
                   vertical: 8,
+                  horizontal: 16,
                 ),
                 title: Text(displayTitle),
                 subtitle: Text(pd.description),

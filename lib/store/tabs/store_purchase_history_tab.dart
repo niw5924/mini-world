@@ -13,9 +13,10 @@ class StorePurchaseHistoryTab extends StatefulWidget {
 }
 
 class _StorePurchaseHistoryTabState extends State<StorePurchaseHistoryTab> {
-  List<Map<String, dynamic>> myPurchaseHistory = [];
-  bool isLoading = true;
   String? error;
+  bool isLoading = true;
+
+  List<Map<String, dynamic>> myPurchaseHistory = [];
 
   @override
   void initState() {
@@ -24,13 +25,20 @@ class _StorePurchaseHistoryTabState extends State<StorePurchaseHistoryTab> {
   }
 
   Future<void> loadPurchaseHistory() async {
+    setState(() {
+      error = null;
+      isLoading = true;
+    });
+
     try {
       final firebaseUser = AuthService().currentUser!;
       final firebaseIdToken = await AuthService().getIdToken(firebaseUser);
+
       final myData = await UserApi.purchaseHistory(firebaseIdToken);
+
       setState(() {
-        myPurchaseHistory = myData;
         isLoading = false;
+        myPurchaseHistory = myData;
       });
     } catch (e) {
       setState(() {
@@ -53,9 +61,9 @@ class _StorePurchaseHistoryTabState extends State<StorePurchaseHistoryTab> {
         side: BorderSide(color: Colors.grey.shade300),
       ),
       elevation: 2,
-      margin: const EdgeInsets.only(bottom: 12),
+      clipBehavior: Clip.antiAlias,
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         title: Text(
           productId,
           style: const TextStyle(fontWeight: FontWeight.bold),
@@ -79,8 +87,9 @@ class _StorePurchaseHistoryTabState extends State<StorePurchaseHistoryTab> {
       return const Center(child: Text('구매 기록이 없습니다.'));
     }
 
-    return ListView.builder(
+    return ListView.separated(
       padding: const EdgeInsets.all(24),
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
       itemCount: myPurchaseHistory.length,
       itemBuilder: (context, index) {
         return _buildPurchaseTile(myPurchaseHistory[index]);

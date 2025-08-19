@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:mini_world/constants/app_colors.dart';
 
 class RainbowBorder extends StatefulWidget {
-  final double borderWidth;
   final double borderRadius;
+  final double borderWidth;
   final Duration duration;
   final Widget child;
 
   const RainbowBorder({
     super.key,
+    this.borderRadius = 16,
     this.borderWidth = 3,
-    this.borderRadius = 12,
     this.duration = const Duration(seconds: 3),
     required this.child,
   });
@@ -66,6 +66,7 @@ class _RainbowBorderState extends State<RainbowBorder>
               ),
             ),
             elevation: 2,
+            clipBehavior: Clip.antiAlias,
             child: widget.child,
           ),
         );
