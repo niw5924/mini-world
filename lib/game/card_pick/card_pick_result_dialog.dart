@@ -19,14 +19,8 @@ Future<void> showCardPickResultDialog({
           builder: (_, state, __) {
             return Dialog(
               backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 24,
-                  horizontal: 20,
-                ),
+                padding: const EdgeInsets.all(24),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -69,7 +63,7 @@ Future<void> showCardPickResultDialog({
                     ),
                     if (state.outcome != null) ...[
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 24),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
                         child: Builder(
                           builder: (_) {
                             final gameResult = GameResult.fromKey(
@@ -89,7 +83,7 @@ Future<void> showCardPickResultDialog({
                                 ),
                                 if (rankPointDelta != null)
                                   Padding(
-                                    padding: const EdgeInsets.only(top: 12),
+                                    padding: const EdgeInsets.only(top: 8),
                                     child: Text.rich(
                                       TextSpan(
                                         children: [

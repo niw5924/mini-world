@@ -35,7 +35,7 @@ class MiniWorldConfirmDialog extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
 
             /// 본문
             Text(
