@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:mini_world/api/user_api.dart';
 import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/constants/app_colors.dart';
+import 'package:mini_world/utils/datetime_utils.dart';
 
 class StorePurchaseHistoryTab extends StatefulWidget {
   const StorePurchaseHistoryTab({super.key});
@@ -49,9 +49,6 @@ class _StorePurchaseHistoryTabState extends State<StorePurchaseHistoryTab> {
   }
 
   Widget _buildPurchaseTile(Map<String, dynamic> record) {
-    final formattedTime = DateFormat(
-      'yyyy-MM-dd HH:mm',
-    ).format(DateTime.parse(record['purchase_time']).toLocal());
     final productId = record['product_id'];
 
     return Card(
@@ -68,7 +65,9 @@ class _StorePurchaseHistoryTabState extends State<StorePurchaseHistoryTab> {
           productId,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle: Text('구매일시: $formattedTime'),
+        subtitle: Text(
+          '구매일시: ${DateTimeUtils.format(record['purchase_time'])}',
+        ),
       ),
     );
   }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:mini_world/api/record_api.dart';
 import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/constants/game_enums.dart';
 import 'package:mini_world/constants/app_colors.dart';
+import 'package:mini_world/utils/datetime_utils.dart';
 
 class GameRecordScreen extends StatefulWidget {
   const GameRecordScreen({super.key});
@@ -75,9 +75,6 @@ class _GameRecordScreenState extends State<GameRecordScreen> {
   }
 
   Widget _buildRecordCard(dynamic record) {
-    final formattedTime = DateFormat(
-      'yyyy-MM-dd HH:mm',
-    ).format(DateTime.parse(record['created_at']).toLocal());
     final gameMode = GameMode.fromKey(record['game_mode']);
     final gameResult = GameResult.fromKey(record['result']);
 
@@ -120,7 +117,7 @@ class _GameRecordScreenState extends State<GameRecordScreen> {
                   Text(
                     '점수 변화: ${record['rank_point_delta'] >= 0 ? '+' : ''}${record['rank_point_delta']}',
                   ),
-                  Text('시간: $formattedTime'),
+                  Text('시간: ${DateTimeUtils.format(record['created_at'])}'),
                 ],
               ),
             ),
