@@ -91,8 +91,10 @@ class _StoreProductsTabState extends State<StoreProductsTab> {
           itemCount: ordered.length,
           itemBuilder: (context, index) {
             final pd = ordered[index];
-            final displayTitle =
-                pd.title.replaceAll(' (Mini World: 1v1 Battle)', '').trim();
+
+            /// pd.title에는 스토어 앱 이름이 함께 붙기 때문에 직접 사용하지 않음
+            final productEnum = StoreProduct.fromKey(pd.id);
+            final displayTitle = productEnum.label;
 
             return RainbowBorder(
               child: ListTile(
