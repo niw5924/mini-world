@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:mini_world/api/purchase_api.dart';
 import 'package:mini_world/auth/auth_service.dart';
+import 'package:mini_world/constants/store_enums.dart';
 import 'package:mini_world/widgets/mini_world_button.dart';
 import 'package:mini_world/widgets/rainbow_border.dart';
 
@@ -14,7 +15,7 @@ class StoreProductsTab extends StatefulWidget {
 }
 
 class _StoreProductsTabState extends State<StoreProductsTab> {
-  final Set<String> _orderedIds = {'lose_protection_3', 'win_bonus_3'};
+  final Set<String> _orderedIds = StoreProduct.values.map((e) => e.key).toSet();
   late Future<ProductDetailsResponse> _productFuture;
   StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
 
