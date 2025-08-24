@@ -64,10 +64,7 @@ class _StorePurchaseHistoryTabState extends State<StorePurchaseHistoryTab> {
       clipBehavior: Clip.antiAlias,
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        title: Text(
-          product.label,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
+        title: Text(product.label),
         subtitle: Text('구매일시: ${DateTimeUtils.format(purchaseTime)}'),
       ),
     );
