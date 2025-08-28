@@ -116,7 +116,7 @@ class _ProfileTabState extends State<ProfileTab> {
                     const Icon(
                       Icons.military_tech,
                       size: 24,
-                      color: Colors.amberAccent,
+                      color: Colors.amber,
                     ),
                     const SizedBox(width: 8),
                     Text(
