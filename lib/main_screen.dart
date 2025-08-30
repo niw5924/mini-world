@@ -3,19 +3,19 @@ import 'package:flutter/services.dart';
 import 'package:mini_world/constants/app_colors.dart';
 import 'package:mini_world/widgets/mini_world_confirm_dialog.dart';
 
-import '../game/game_tab.dart';
-import '../profile/profile_tab.dart';
-import '../ranking/ranking_tab.dart';
-import '../store/store_tab.dart';
+import 'game/game_tab.dart';
+import 'profile/profile_tab.dart';
+import 'ranking/ranking_tab.dart';
+import 'store/store_tab.dart';
 
-class MiniWorldHomePage extends StatefulWidget {
-  const MiniWorldHomePage({super.key});
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
 
   @override
-  State<MiniWorldHomePage> createState() => _MiniWorldHomePageState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class _MiniWorldHomePageState extends State<MiniWorldHomePage> {
+class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _tabs = [

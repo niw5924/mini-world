@@ -3,8 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:mini_world/auth/login_page.dart';
-import 'package:mini_world/home/mini_world_home_page.dart';
+import 'package:mini_world/auth/login_screen.dart';
+import 'package:mini_world/main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,9 +31,9 @@ class MyApp extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasData) {
-            return const MiniWorldHomePage();
+            return const MainScreen();
           } else {
-            return const LoginPage();
+            return const LoginScreen();
           }
         },
       ),

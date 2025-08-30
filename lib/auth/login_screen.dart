@@ -3,8 +3,8 @@ import 'package:mini_world/auth/auth_service.dart';
 import 'package:mini_world/api/user_api.dart';
 import 'package:mini_world/constants/app_colors.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
