@@ -53,7 +53,9 @@ class _MainScreenState extends State<MainScreen> {
           backgroundColor: AppColors.appBarBackground,
         ),
         backgroundColor: AppColors.scaffoldBackground,
-        body: SafeArea(child: _tabs[_selectedIndex]),
+        body: SafeArea(
+          child: IndexedStack(index: _selectedIndex, children: _tabs),
+        ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           currentIndex: _selectedIndex,
