@@ -16,14 +16,16 @@ class StoreProductsTab extends StatefulWidget {
 }
 
 class _StoreProductsTabState extends State<StoreProductsTab> {
+  late Future<Map<String, dynamic>> _itemsFuture;
   final Set<String> _orderedIds = StoreProduct.values.map((e) => e.key).toSet();
-  late Future<ProductDetailsResponse> _productFuture;
+  late Future<ProductDetailsResponse> _productsFuture;
   StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
 
   @override
   void initState() {
     super.initState();
-    _productFuture = InAppPurchase.instance.queryProductDetails(_orderedIds);
+    _itemsFuture = loadItems();
+    _productsFuture = InAppPurchase.instance.queryProductDetails(_orderedIds);
     _purchaseSub = InAppPurchase.instance.purchaseStream.listen((
       purchases,
     ) async {
@@ -42,6 +44,10 @@ class _StoreProductsTabState extends State<StoreProductsTab> {
               productId: p.productID,
             );
             await InAppPurchase.instance.completePurchase(p);
+
+            setState(() {
+              _itemsFuture = loadItems();
+            });
           } catch (e) {
             ScaffoldMessenger.of(
               context,
@@ -78,7 +84,7 @@ class _StoreProductsTabState extends State<StoreProductsTab> {
     return Column(
       children: [
         FutureBuilder<Map<String, dynamic>>(
-          future: loadItems(),
+          future: _itemsFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState != ConnectionState.done) {
               return const Center(child: CircularProgressIndicator());
@@ -109,7 +115,7 @@ class _StoreProductsTabState extends State<StoreProductsTab> {
         ),
         Expanded(
           child: FutureBuilder<ProductDetailsResponse>(
-            future: _productFuture,
+            future: _productsFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState != ConnectionState.done) {
                 return const Center(child: CircularProgressIndicator());
